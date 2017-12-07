@@ -1,0 +1,6 @@
+{
+	"discord": {
+		"token": "<discord bot token>",
+		"client_id": "<discord client id>"
+	}
+}
