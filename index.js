@@ -67,16 +67,18 @@ function bee(url, size) {
 				console.log("Drawing first image")
 				try {
 					ctx.drawImage(beeTemplate, resultingBeeLeft, resultingBeeTop, resultingWidth, beeTemplate.height * beeScale);
+					console.log("Drawing done.")
 				} catch(err) {
 					reject({status: 400, error: "Invalid template"})
 				}
 				console.log("Drawing second image")
 				try {
 					ctx.drawImage(img, resultingImgLeft, resultingImgTop, width, height);
+					console.log("Drawing done.")
 				} catch(err) {
+					console.error(err);
 					reject({status: 400, error: "Invalid image"})
 				}
-				console.log("Drawing done.")
 				
 				// return the image and cache it 
 				resolve(canvas);
