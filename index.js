@@ -76,7 +76,7 @@ function render(template, img, size) {
 		ctx.drawImage(template.image, resultingTemplateLeft, resultingTemplateTop, template.image.width * templateScale, template.image.height * templateScale);
 		console.log("Drawing done.")
 	} catch (err) {
-		throw new Error({ status: 400, error: "Invalid template" })
+		throw new Error(JSON.stringify({ status: 400, error: "Invalid template" }))
 	}
 	console.log("Drawing image")
 	try {
@@ -84,7 +84,7 @@ function render(template, img, size) {
 		console.log("Drawing done.")
 	} catch (err) {
 		console.error(err);
-		throw new Error({ status: 400, error: "Invalid image" })
+		throw new Error(JSON.stringify({ status: 400, error: "Invalid image" }))
 	}
 
 	// return the image and cache it 
@@ -98,13 +98,15 @@ const upperLeftFactor = 0.5 - 0.7071 * circleScale; // %-ual location of the upp
 
 app.get("/:templateName/", async function (req, res) {
 	if(!templates[req.params.templateName]) return res.status(404).end();
-	render(templates[req.params.templateName], await loadImage(req.query.url)).then((canvas) => {
+	try {
+		const canvas = render(templates[req.params.templateName], await loadImage(req.query.url))
 		console.log(canvas)
 		res.setHeader('Content-Type', 'image/png');
-		canvas.pngStream().pipe(res);
-	}).catch((err) => {
-		res.status(err.status).end(err.error);
-	})
+		return canvas.pngStream().pipe(res);
+	} catch(err) {
+		console.log(err.message);
+		return res.status(400).end(err.message);
+	}
 });
 
 app.listen(3002, function () {
@@ -179,15 +181,19 @@ client.on('message', async function (message) {
 	const messageSplit = message.cleanContent.split(" ");
 	const emoji = findEmoji(message.cleanContent);
 	let result = null;
+	let count = 0;
 	try {
 		if (emoji) {
 			let name = emoji.name;
-			for (var i = 0; i < messageSplit.length && i<4; ++i) {
+			for (var i = 0; i < messageSplit.length && count < 4; ++i) {
 				const commandParsed = /^\/(\w+)\b/.exec(messageSplit[i]);
 				if (commandParsed && templates[commandParsed[1]]) {
+					count++;
 					name += commandParsed[1];
 					if (result === null) result = await loadImage(emoji.url);
 					result = render(templates[commandParsed[1]], result);
+				} else {
+					if(i===0) return;
 				}
 			}
 			if (result) {
