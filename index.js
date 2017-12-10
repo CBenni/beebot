@@ -34,77 +34,61 @@ for(templateName in templates) {
 }
 
 
-function render(template, url, size) {
-	return new Promise((resolve, reject) => {
-		console.log("Getting " + url);
-		if (url) {
-			request.get({ url: url, encoding: null }, function (e, r, data) {
-				if (e) {
-					reject({ status: (r && r.statusCode || 500), error: e });
-					return;
-				}
-				var img = new Image();
-				img.src = data;
-				console.log("image loaded");
-				var width = img.width;
-				var height = img.height;
-				if (size && size.height) {
-					height = size.height;
-					if (!size.width) width = width * size.height / img.height;
-				}
-				if (size && size.width) {
-					width = size.width;
-					if (!size.height) height = height * size.width / img.width;
-				}
+function render(template, img, size) {
+	var width = img.width;
+	var height = img.height;
+	if (size && size.height) {
+		height = size.height;
+		if (!size.width) width = width * size.height / img.height;
+	}
+	if (size && size.width) {
+		width = size.width;
+		if (!size.height) height = height * size.width / img.width;
+	}
 
-				const templateScale = width / template.widthTarget; // scale the template to fit the image
+	const templateScale = width / template.widthTarget; // scale the template to fit the image
 
 
-				let resultingWidth = template.image.width * templateScale;
-				let resultingHeight = template.image.height * templateScale;
+	let resultingWidth = template.image.width * templateScale;
+	let resultingHeight = template.image.height * templateScale;
 
-				let imgTop = template.bottomTarget * templateScale - height; // naive top center position
+	let imgTop = template.bottomTarget * templateScale - height; // naive top center position
 
-				if (imgTop < 0) {
-					resultingHeight -= imgTop;
-					imgTop = 0;
-				}
+	if (imgTop < 0) {
+		resultingHeight -= imgTop;
+		imgTop = 0;
+	}
 
-				const resultingImgTop = imgTop;
-				const resultingImgLeft = template.leftOffset * templateScale - width / 2.0;
+	const resultingImgTop = imgTop;
+	const resultingImgLeft = template.leftOffset * templateScale - width / 2.0;
 
-				if(resultingImgLeft + width > resultingWidth) {
-					resultingWidth = resultingImgLeft + width;
-				}
+	if(resultingImgLeft + width > resultingWidth) {
+		resultingWidth = resultingImgLeft + width;
+	}
 
-				const resultingTemplateTop = resultingHeight - template.image.height * templateScale;
-				const resultingTemplateLeft = 0.0;
+	const resultingTemplateTop = resultingHeight - template.image.height * templateScale;
+	const resultingTemplateLeft = 0.0;
 
-				var canvas = new Canvas(resultingWidth, resultingHeight);
-				var ctx = canvas.getContext("2d");
-				console.log("Drawing template")
-				try {
-					ctx.drawImage(template.image, resultingTemplateLeft, resultingTemplateTop, template.image.width * templateScale, template.image.height * templateScale);
-					console.log("Drawing done.")
-				} catch (err) {
-					reject({ status: 400, error: "Invalid template" })
-				}
-				console.log("Drawing image")
-				try {
-					ctx.drawImage(img, resultingImgLeft, resultingImgTop, width, height);
-					console.log("Drawing done.")
-				} catch (err) {
-					console.error(err);
-					reject({ status: 400, error: "Invalid image" })
-				}
+	var canvas = new Canvas(resultingWidth, resultingHeight);
+	var ctx = canvas.getContext("2d");
+	console.log("Drawing template "+template.template)
+	try {
+		ctx.drawImage(template.image, resultingTemplateLeft, resultingTemplateTop, template.image.width * templateScale, template.image.height * templateScale);
+		console.log("Drawing done.")
+	} catch (err) {
+		reject({ status: 400, error: "Invalid template" })
+	}
+	console.log("Drawing image")
+	try {
+		ctx.drawImage(img, resultingImgLeft, resultingImgTop, width, height);
+		console.log("Drawing done.")
+	} catch (err) {
+		console.error(err);
+		reject({ status: 400, error: "Invalid image" })
+	}
 
-				// return the image and cache it 
-				resolve(canvas);
-			});
-		} else {
-			reject({ status: 400, error: "No url specified" });
-		}
-	});
+	// return the image and cache it 
+	return(canvas);
 }
 
 const circleScale = 0.4;
@@ -112,9 +96,9 @@ const lineWidthScale = 0.2;
 const lowerRightFactor = 0.5 + 0.7071 * circleScale; // %-ual location of the lower right end of the strikethrough line
 const upperLeftFactor = 0.5 - 0.7071 * circleScale; // %-ual location of the upper left end of the strikethrough line
 
-app.get("/:templateName/", function (req, res) {
+app.get("/:templateName/", async function (req, res) {
 	if(!templates[req.params.templateName]) return res.status(404).end();
-	render(templates[req.params.templateName], req.query.url).then((canvas) => {
+	render(templates[req.params.templateName], await loadImage(req.query.url)).then((canvas) => {
 		console.log(canvas)
 		res.setHeader('Content-Type', 'image/png');
 		canvas.pngStream().pipe(res);
@@ -173,19 +157,49 @@ function findEmoji(str) {
 	return unicodeEmoji;
 }
 
-client.on('message', function (message) {
+function loadImage(url) {
+	return new Promise((resolve, reject) => {
+		console.log("Getting " + url);
+		if (url) {
+			request.get({ url: url, encoding: null }, function (e, r, data) {
+				if (e) {
+					return reject({ status: (r && r.statusCode || 500), error: e });
+				}
+				var img = new Image();
+				img.src = data;
+				resolve(img);
+			})
+		}
+	});
+}
+
+client.on('message', async function (message) {
 	console.log(message.cleanContent);
-	const commandParsed = /^\/(\w+)\b/.exec(message.cleanContent);
-	if (commandParsed && templates[commandParsed[1]]) {
-		// get emoji from message
-		const emoji = findEmoji(message.cleanContent);
-		if (emoji) render(templates[commandParsed[1]], emoji.url).then(canvas => {
-			var messageOptions = {
-				files: [
-					{ attachment: canvas.toBuffer(), name: emoji.name + commandParsed[1] + ".png" }
-				]
+
+	const messageSplit = message.cleanContent.split(" ");
+	const emoji = findEmoji(message.cleanContent);
+	let result = null;
+	try {
+		if (emoji) {
+			let name = emoji.name;
+			for (var i = 0; i < messageSplit.length && i<3; ++i) {
+				const commandParsed = /^\/(\w+)\b/.exec(messageSplit[i]);
+				if (commandParsed && templates[commandParsed[1]]) {
+					name += commandParsed[1];
+					if (result === null) result = await loadImage(emoji.url);
+					result = render(templates[commandParsed[1]], result);
+				}
 			}
-			message.channel.send("", messageOptions);
-		});
+			if (result) {
+				var messageOptions = {
+					files: [
+						{ attachment: result.toBuffer(), name: name + ".png" }
+					]
+				}
+				message.channel.send("", messageOptions);
+			}
+		}
+	} catch(err) {
+		console.error(err);
 	}
 });
