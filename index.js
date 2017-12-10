@@ -76,7 +76,7 @@ function render(template, img, size) {
 		ctx.drawImage(template.image, resultingTemplateLeft, resultingTemplateTop, template.image.width * templateScale, template.image.height * templateScale);
 		console.log("Drawing done.")
 	} catch (err) {
-		reject({ status: 400, error: "Invalid template" })
+		throw new Error({ status: 400, error: "Invalid template" })
 	}
 	console.log("Drawing image")
 	try {
@@ -84,7 +84,7 @@ function render(template, img, size) {
 		console.log("Drawing done.")
 	} catch (err) {
 		console.error(err);
-		reject({ status: 400, error: "Invalid image" })
+		throw new Error({ status: 400, error: "Invalid image" })
 	}
 
 	// return the image and cache it 
@@ -182,7 +182,7 @@ client.on('message', async function (message) {
 	try {
 		if (emoji) {
 			let name = emoji.name;
-			for (var i = 0; i < messageSplit.length && i<3; ++i) {
+			for (var i = 0; i < messageSplit.length && i<4; ++i) {
 				const commandParsed = /^\/(\w+)\b/.exec(messageSplit[i]);
 				if (commandParsed && templates[commandParsed[1]]) {
 					name += commandParsed[1];
