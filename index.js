@@ -12,20 +12,7 @@ var config = require("./config");
 
 var cache = {};
 
-templates = {
-	bee: {
-		template: "./BeeTemplate.png",
-		leftOffset: 475,
-		widthTarget: 600,
-		bottomTarget: 530
-	},
-	turtle: {
-		template: "./TurtleTemplate.png",
-		leftOffset: 210,
-		widthTarget: 150,
-		bottomTarget: 150
-	}
-}
+templates = config.templates;
 
 for(templateName in templates) {
 	const data = templates[templateName];
@@ -33,6 +20,14 @@ for(templateName in templates) {
 	data.image.src = data.template;
 }
 
+// drawing: we keep the image fixed in its default position and draw the template on top/below it
+
+// calculates the x or y position of the template to be drawn
+// size = width or height of the template/image
+// anchor = the corresponding anchor config
+function calculatePosition(scale, anchor, imageSize) {
+	return imageSize * anchor.position / 100 - anchor.offset * scale;
+}
 
 function render(template, img, size) {
 	var width = img.width;
@@ -46,45 +41,65 @@ function render(template, img, size) {
 		if (!size.height) height = height * size.width / img.width;
 	}
 
-	const templateScale = width / template.widthTarget; // scale the template to fit the image
+	const xScale = width / template.anchor.x.size;
+	const yScale = width / template.anchor.y.size;
+	const templateScale = Math.min(xScale || 1, yScale || 1);
 
+	let templateOffsetX = calculatePosition(templateScale, template.anchor.x, width);
+	let templateOffsetY = calculatePosition(templateScale, template.anchor.y, height);
 
-	let resultingWidth = template.image.width * templateScale;
-	let resultingHeight = template.image.height * templateScale;
+	let imageOffsetX = 0;
+	let imageOffsetY = 0;
+	let resultingWidth = width; // start with the image boundaries as defined by the image
+	let resultingHeight = height;
 
-	let imgTop = template.bottomTarget * templateScale - height; // naive top center position
-
-	if (imgTop < 0) {
-		resultingHeight -= imgTop;
-		imgTop = 0;
+	if(templateOffsetX < 0) {
+		resultingWidth -= templateOffsetX;
+		imageOffsetX = -templateOffsetX;
+		templateOffsetX = 0;
+	}
+	if(templateOffsetY < 0) {
+		resultingHeight -= templateOffsetY;
+		imageOffsetY = -templateOffsetY;
+		templateOffsetY = 0;
+	}
+	if(template.image.width * templateScale > resultingWidth) {
+		resultingWidth = template.image.width * templateScale;
+	}
+	if(template.image.height * templateScale > resultingHeight) {
+		resultingHeight = template.image.height * templateScale;
 	}
 
-	const resultingImgTop = imgTop;
-	const resultingImgLeft = template.leftOffset * templateScale - width / 2.0;
-
-	if(resultingImgLeft + width > resultingWidth) {
-		resultingWidth = resultingImgLeft + width;
-	}
-
-	const resultingTemplateTop = resultingHeight - template.image.height * templateScale;
-	const resultingTemplateLeft = 0.0;
+	const toDraw = [{
+		z: 1,
+		image: img,
+		x: imageOffsetX,
+		y: imageOffsetY,
+		h: height,
+		w: width,
+		name: "image"
+	}, {
+		z: template.z || 0,
+		image: template.image,
+		x: templateOffsetX,
+		y: templateOffsetY,
+		h: template.image.height * templateScale,
+		w: template.image.width * templateScale,
+		name: "template "+template.template
+	}].sort((u,v) => u.z > v.z);
 
 	var canvas = new Canvas(resultingWidth, resultingHeight);
 	var ctx = canvas.getContext("2d");
-	console.log("Drawing template "+template.template)
-	try {
-		ctx.drawImage(template.image, resultingTemplateLeft, resultingTemplateTop, template.image.width * templateScale, template.image.height * templateScale);
-		console.log("Drawing done.")
-	} catch (err) {
-		throw new Error(JSON.stringify({ status: 400, error: "Invalid template" }))
-	}
-	console.log("Drawing image")
-	try {
-		ctx.drawImage(img, resultingImgLeft, resultingImgTop, width, height);
-		console.log("Drawing done.")
-	} catch (err) {
-		console.error(err);
-		throw new Error(JSON.stringify({ status: 400, error: "Invalid image" }))
+
+	for(let i=0;i<toDraw.length;++i) {
+		const subject = toDraw[i];
+		console.log("Drawing "+subject.name)
+		try {
+			ctx.drawImage(subject.image, subject.x, subject.y, subject.w, subject.h);
+		 } catch (err) {
+			console.error(err);
+			throw new Error(JSON.stringify({ status: 400, error: "Invalid template" }))
+		}
 	}
 
 	// return the image and cache it 
@@ -104,7 +119,7 @@ app.get("/:templateName/", async function (req, res) {
 		res.setHeader('Content-Type', 'image/png');
 		return canvas.pngStream().pipe(res);
 	} catch(err) {
-		console.log(err.message);
+		console.log(err);
 		return res.status(400).end(err.message);
 	}
 });
@@ -134,7 +149,6 @@ client.login(config.discord.token).catch(function (error) {
 		process.exit(15);
 	}
 });
-
 
 function findEmoji(str) {
 	const discordEmote = /<:(\w+):(\d+)>/g.exec(str)
