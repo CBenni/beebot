@@ -48,6 +48,21 @@
 					"offset": 150
 				}
 			}
+		},
+		"birthday": {
+			"template": "./BirthdayHat.png",
+			"z": 2,
+			"anchor": {
+				"x": {
+					"position": 50,
+					"offset": 512,
+					"size": 1024
+				},
+				"y": {
+					"position": 0,
+					"offset": 700
+				}
+			}
 		}
 	}
 }
