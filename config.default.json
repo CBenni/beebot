@@ -56,11 +56,26 @@
 				"x": {
 					"position": 50,
 					"offset": 512,
-					"size": 1024
+					"size": 1000
 				},
 				"y": {
 					"position": 0,
 					"offset": 700
+				}
+			}
+		},
+		"space": {
+			"template": "./AstronautHelmet.png",
+			"z": 2,
+			"anchor": {
+				"x": {
+					"position": 50,
+					"offset": 300,
+					"size": 500
+				},
+				"y": {
+					"position": 50,
+					"offset": 300
 				}
 			}
 		}
