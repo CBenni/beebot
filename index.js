@@ -69,11 +69,11 @@ function render(template, img, size) {
 		imageOffsetY = -templateOffsetY;
 		templateOffsetY = 0;
 	}
-	if(template.image.width * templateScale > resultingWidth) {
-		resultingWidth = template.image.width * templateScale;
+	if(templateOffsetX + template.image.width * templateScale > resultingWidth) {
+		resultingWidth = templateOffsetX + template.image.width * templateScale;
 	}
-	if(template.image.height * templateScale > resultingHeight) {
-		resultingHeight = template.image.height * templateScale;
+	if(templateOffsetY + template.image.height * templateScale > resultingHeight) {
+		resultingHeight = templateOffsetY + template.image.height * templateScale;
 	}
 
 	const toDraw = [{
