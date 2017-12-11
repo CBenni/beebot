@@ -2,5 +2,52 @@
 	"discord": {
 		"token": "<discord bot token>",
 		"client_id": "<discord client id>"
+	},
+	"templates": {
+		"bee": {
+			"template": "./BeeTemplate.png",
+			"z": 0,
+			"anchor": {
+				"x": {
+					"position": 50,
+					"offset": 475,
+					"size": 600
+				},
+				"y": {
+					"position": 100,
+					"offset": 530
+				}
+			}
+		},
+		"turtle": {
+			"template": "./TurtleTemplate.png",
+			"z": 0,
+			"anchor": {
+				"x": {
+					"position": 50,
+					"offset": 210,
+					"size": 150
+				},
+				"y": {
+					"position": 100,
+					"offset": 150
+				}
+			}
+		},
+		"santa": {
+			"template": "./SantaHat.png",
+			"z": 2,
+			"anchor": {
+				"x": {
+					"position": 50,
+					"offset": 275,
+					"size": 350
+				},
+				"y": {
+					"position": 0,
+					"offset": 150
+				}
+			}
+		}
 	}
 }
