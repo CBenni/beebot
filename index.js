@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var express = require("express");
 var request = require("request");
 var Discord = require('discord.js');
@@ -8,7 +9,12 @@ const Image = Canvas.Image;
 const twemoji = require("./twemoji");
 
 var app = express()
-var config = require("./config");
+var config = require("./config.default.json");
+try {
+	_.extend(config, require("./config"));
+}catch(err) {
+	console.log("No config.json found!");
+}
 
 var cache = {};
 
