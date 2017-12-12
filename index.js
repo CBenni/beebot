@@ -48,8 +48,10 @@ function render(template, img, size) {
 	}
 
 	const xScale = width / template.anchor.x.size;
-	const yScale = width / template.anchor.y.size;
-	const templateScale = Math.min(xScale || 1, yScale || 1);
+	const yScale = height / template.anchor.y.size;
+	const templateScale = Math.max(0, Math.min(10, Math.max(xScale || 0, yScale || 0)));
+	console.log("templateScale",templateScale)
+	
 
 	let templateOffsetX = calculatePosition(templateScale, template.anchor.x, width);
 	let templateOffsetY = calculatePosition(templateScale, template.anchor.y, height);

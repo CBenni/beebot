@@ -74,8 +74,24 @@
 					"size": 500
 				},
 				"y": {
+					"position": 0,
+					"offset": 10,
+					"size": 500
+				}
+			}
+		},
+		"comfy": {
+			"template": "./ComfyTemplate.png",
+			"z": 2,
+			"anchor": {
+				"x": {
 					"position": 50,
-					"offset": 300
+					"offset": 250,
+					"size": 380
+				},
+				"y": {
+					"position": 100,
+					"offset": 500
 				}
 			}
 		}
