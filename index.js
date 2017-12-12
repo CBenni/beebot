@@ -191,7 +191,7 @@ function loadImage(url) {
 }
 
 client.on('message', async function (message) {
-	console.log(message.cleanContent);
+	console.log(`[${message.guild.name} - ${message.channel.name}] ${message.author.username}#${message.author.discriminator}: ${message.cleanContent}`);
 
 	if(message.cleanContent.startsWith('/invite')) {
 		message.channel.send(`Invite link: <${invitelink}>`);
