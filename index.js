@@ -197,6 +197,11 @@ client.on('message', async function (message) {
 		message.channel.send(`Invite link: <${invitelink}>`);
 		return;
 	}
+	if(message.cleanContent.startsWith('/help') || message.cleanContent.startsWith('/beebot')) {
+		let commands = Object.keys(templates).map(x => '/'+x).join(', ');
+		message.channel.send(`Available commands: ${commands}`);
+		return;
+	}
 
 	const messageSplit = message.cleanContent.split(" ");
 	const emoji = findEmoji(message.cleanContent);
