@@ -74,8 +74,8 @@
 					"size": 500
 				},
 				"y": {
-					"position": 0,
-					"offset": 10,
+					"position": 100,
+					"offset": 500,
 					"size": 500
 				}
 			}
