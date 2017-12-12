@@ -85,8 +85,8 @@
 			"z": 2,
 			"anchor": {
 				"x": {
-					"position": 50,
-					"offset": 250,
+					"position": 45,
+					"offset": 210,
 					"size": 380
 				},
 				"y": {
