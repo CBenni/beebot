@@ -198,6 +198,11 @@ function loadImage(url) {
 client.on('message', async function (message) {
 	console.log(message.cleanContent);
 
+	if(message.cleanContent.startsWith('/invite')) {
+		message.channel.send(`Invite link: <${invitelink}>`);
+		return;
+	}
+
 	const messageSplit = message.cleanContent.split(" ");
 	const emoji = findEmoji(message.cleanContent);
 	let result = null;
