@@ -112,11 +112,6 @@ function render(template, img, size) {
 	return(canvas);
 }
 
-const circleScale = 0.4;
-const lineWidthScale = 0.2;
-const lowerRightFactor = 0.5 + 0.7071 * circleScale; // %-ual location of the lower right end of the strikethrough line
-const upperLeftFactor = 0.5 - 0.7071 * circleScale; // %-ual location of the upper left end of the strikethrough line
-
 app.get("/:templateName/", async function (req, res) {
 	if(!templates[req.params.templateName]) return res.status(404).end();
 	try {
