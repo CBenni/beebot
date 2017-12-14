@@ -140,6 +140,22 @@
 					"offset": 22.5
 				}
 			}
+		},
+		"snowglobe": {
+			"template": "./SnowGlobe.png",
+			"z": 2,
+			"anchor": {
+				"x": {
+					"position": 50,
+					"offset": 92.5,
+					"size": 185
+				},
+				"y": {
+					"position": 0,
+					"offset": 20,
+					"size": 150
+				}
+			}
 		}
 	}
 }
