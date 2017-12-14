@@ -64,6 +64,21 @@
 				}
 			}
 		},
+		"dank": {
+			"template": "./DankHat.png",
+			"z": 2,
+			"anchor": {
+				"x": {
+					"position": 50,
+					"offset": 150,
+					"size": 320
+				},
+				"y": {
+					"position": 0,
+					"offset": 220
+				}
+			}
+		},
 		"space": {
 			"template": "./AstronautHelmet.png",
 			"z": 2,
