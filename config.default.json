@@ -156,6 +156,22 @@
 					"size": 150
 				}
 			}
+		},
+		"ice": {
+			"template": "./IceCube.png",
+			"z": 2,
+			"anchor": {
+				"x": {
+					"position": 50,
+					"offset": 128,
+					"size": 200
+				},
+				"y": {
+					"position": 50,
+					"offset": 128,
+					"size": 200
+				}
+			}
 		}
 	}
 }
