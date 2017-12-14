@@ -125,6 +125,21 @@
 					"size": 512
 				}
 			}
+		},
+		"anger": {
+			"template": "./anger.png",
+			"z": 2,
+			"anchor": {
+				"x": {
+					"position": 0,
+					"offset": -100,
+					"size": 150
+				},
+				"y": {
+					"position": 0,
+					"offset": -20
+				}
+			}
 		}
 	}
 }
