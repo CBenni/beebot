@@ -131,13 +131,13 @@
 			"z": 2,
 			"anchor": {
 				"x": {
-					"position": 0,
-					"offset": -100,
-					"size": 150
+					"position": 75,
+					"offset": 22.5,
+					"size": 100
 				},
 				"y": {
-					"position": 0,
-					"offset": -20
+					"position": 25,
+					"offset": 22.5
 				}
 			}
 		}
