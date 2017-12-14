@@ -109,6 +109,22 @@
 					"offset": 480
 				}
 			}
+		},
+		"netneutrality": {
+			"template": "./NetNeutrality.png",
+			"z": 2,
+			"anchor": {
+				"x": {
+					"position": 50,
+					"offset": 256,
+					"size": 512
+				},
+				"y": {
+					"position": 50,
+					"offset": 256,
+					"size": 512
+				}
+			}
 		}
 	}
 }
