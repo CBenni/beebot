@@ -5,7 +5,7 @@
 	},
 	"templates": {
 		"bee": {
-			"template": "./BeeTemplate.png",
+			"template": "./resources/BeeTemplate.png",
 			"z": 0,
 			"anchor": {
 				"x": {
@@ -20,7 +20,7 @@
 			}
 		},
 		"turtle": {
-			"template": "./TurtleTemplate.png",
+			"template": "./resources/TurtleTemplate.png",
 			"z": 0,
 			"anchor": {
 				"x": {
@@ -35,7 +35,7 @@
 			}
 		},
 		"santa": {
-			"template": "./SantaHat.png",
+			"template": "./resources/SantaHat.png",
 			"z": 2,
 			"anchor": {
 				"x": {
@@ -50,7 +50,7 @@
 			}
 		},
 		"birthday": {
-			"template": "./BirthdayHat.png",
+			"template": "./resources/BirthdayHat.png",
 			"z": 2,
 			"anchor": {
 				"x": {
@@ -65,7 +65,7 @@
 			}
 		},
 		"dank": {
-			"template": "./DankHat.png",
+			"template": "./resources/DankHat.png",
 			"z": 2,
 			"anchor": {
 				"x": {
@@ -80,7 +80,7 @@
 			}
 		},
 		"space": {
-			"template": "./AstronautHelmet.png",
+			"template": "./resources/AstronautHelmet.png",
 			"z": 2,
 			"anchor": {
 				"x": {
@@ -96,7 +96,7 @@
 			}
 		},
 		"comfy": {
-			"template": "./ComfyTemplate.png",
+			"template": "./resources/ComfyTemplate.png",
 			"z": 2,
 			"anchor": {
 				"x": {
@@ -111,7 +111,7 @@
 			}
 		},
 		"netneutrality": {
-			"template": "./NetNeutrality.png",
+			"template": "./resources/NetNeutrality.png",
 			"z": 2,
 			"anchor": {
 				"x": {
@@ -127,7 +127,7 @@
 			}
 		},
 		"anger": {
-			"template": "./anger.png",
+			"template": "./resources/anger.png",
 			"z": 2,
 			"anchor": {
 				"x": {
@@ -142,7 +142,7 @@
 			}
 		},
 		"snowglobe": {
-			"template": "./SnowGlobe.png",
+			"template": "./resources/SnowGlobe.png",
 			"z": 2,
 			"anchor": {
 				"x": {
@@ -158,7 +158,7 @@
 			}
 		},
 		"ice": {
-			"template": "./IceCube.png",
+			"template": "./resources/IceCube.png",
 			"z": 2,
 			"anchor": {
 				"x": {
