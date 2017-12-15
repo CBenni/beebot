@@ -5,7 +5,7 @@
 	},
 	"templates": {
 		"bee": {
-			"template": "./resources/BeeTemplate.png",
+			"src": "./resources/BeeTemplate.png",
 			"z": 0,
 			"anchor": {
 				"x": {
@@ -20,7 +20,7 @@
 			}
 		},
 		"turtle": {
-			"template": "./resources/TurtleTemplate.png",
+			"src": "./resources/TurtleTemplate.png",
 			"z": 0,
 			"anchor": {
 				"x": {
@@ -35,7 +35,7 @@
 			}
 		},
 		"santa": {
-			"template": "./resources/SantaHat.png",
+			"src": "./resources/SantaHat.png",
 			"z": 2,
 			"anchor": {
 				"x": {
@@ -50,7 +50,7 @@
 			}
 		},
 		"birthday": {
-			"template": "./resources/BirthdayHat.png",
+			"src": "./resources/BirthdayHat.png",
 			"z": 2,
 			"anchor": {
 				"x": {
@@ -65,7 +65,7 @@
 			}
 		},
 		"dank": {
-			"template": "./resources/DankHat.png",
+			"src": "./resources/DankHat.png",
 			"z": 2,
 			"anchor": {
 				"x": {
@@ -80,7 +80,7 @@
 			}
 		},
 		"space": {
-			"template": "./resources/AstronautHelmet.png",
+			"src": "./resources/AstronautHelmet.png",
 			"z": 2,
 			"anchor": {
 				"x": {
@@ -96,7 +96,7 @@
 			}
 		},
 		"comfy": {
-			"template": "./resources/ComfyTemplate.png",
+			"src": "./resources/ComfyTemplate.png",
 			"z": 2,
 			"anchor": {
 				"x": {
@@ -111,7 +111,7 @@
 			}
 		},
 		"netneutrality": {
-			"template": "./resources/NetNeutrality.png",
+			"src": "./resources/NetNeutrality.png",
 			"z": 2,
 			"anchor": {
 				"x": {
@@ -127,7 +127,7 @@
 			}
 		},
 		"anger": {
-			"template": "./resources/anger.png",
+			"src": "./resources/anger.png",
 			"z": 2,
 			"anchor": {
 				"x": {
@@ -142,7 +142,7 @@
 			}
 		},
 		"snowglobe": {
-			"template": "./resources/SnowGlobe.png",
+			"src": "./resources/SnowGlobe.png",
 			"z": 2,
 			"anchor": {
 				"x": {
@@ -158,7 +158,7 @@
 			}
 		},
 		"ice": {
-			"template": "./resources/IceCube.png",
+			"src": "./resources/IceCube.png",
 			"z": 2,
 			"anchor": {
 				"x": {
@@ -172,6 +172,35 @@
 					"size": 200
 				}
 			}
-		}
+		},
+		"snowman": [{
+			"src": "./resources/SnowMan.png",
+			"z": 0,
+			"anchor": {
+				"x": {
+					"position": 50,
+					"offset": 125,
+					"size": 120
+				},
+				"y": {
+					"position": 100,
+					"offset": 60
+				}
+			}
+		}, {
+			"src": "./resources/SnowManHat.png",
+			"z": 2,
+			"anchor": {
+				"x": {
+					"position": 50,
+					"offset": 60,
+					"size": 200
+				},
+				"y": {
+					"position": 0,
+					"offset": 50
+				}
+			}
+		}]
 	}
 }

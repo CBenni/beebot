@@ -18,12 +18,18 @@ try {
 
 var cache = {};
 
+function all(x, c) {
+	_.isArray(x) ? _.each(x,c) : c(x);
+}
+
 templates = config.templates;
 
 for(templateName in templates) {
 	const data = templates[templateName];
-	data.image = new Image();
-	data.image.src = data.template;
+	all(data, template => {
+		template.image = new Image();
+		template.image.src = template.src;
+	})
 }
 
 // drawing: we keep the image fixed in its default position and draw the template on top/below it
@@ -36,30 +42,30 @@ function calculatePosition(scale, anchor, imageSize) {
 }
 
 function render(template, img, size) {
-	var width = img.width;
-	var height = img.height;
+	var imgWidth = img.width;
+	var imgHeight = img.height;
 	if (size && size.height) {
-		height = size.height;
-		if (!size.width) width = width * size.height / img.height;
+		imgHeight = size.height;
+		if (!size.width) imgWidth = imgWidth * size.height / img.height;
 	}
 	if (size && size.width) {
-		width = size.width;
-		if (!size.height) height = height * size.width / img.width;
+		imgWidth = size.width;
+		if (!size.height) imgHeight = imgHeight * size.width / img.width;
 	}
 
-	const xScale = width / template.anchor.x.size;
-	const yScale = height / template.anchor.y.size;
+	const xScale = imgWidth / template.anchor.x.size;
+	const yScale = imgHeight / template.anchor.y.size;
 	const templateScale = Math.max(0, Math.min(10, Math.max(xScale || 0, yScale || 0)));
 	console.log("templateScale",templateScale)
 	
 
-	let templateOffsetX = calculatePosition(templateScale, template.anchor.x, width);
-	let templateOffsetY = calculatePosition(templateScale, template.anchor.y, height);
+	let templateOffsetX = calculatePosition(templateScale, template.anchor.x, imgWidth);
+	let templateOffsetY = calculatePosition(templateScale, template.anchor.y, imgHeight);
 
 	let imageOffsetX = 0;
 	let imageOffsetY = 0;
-	let resultingWidth = width; // start with the image boundaries as defined by the image
-	let resultingHeight = height;
+	let resultingWidth = imgWidth; // start with the image boundaries as defined by the image
+	let resultingHeight = imgHeight;
 
 	if(templateOffsetX < 0) {
 		resultingWidth -= templateOffsetX;
@@ -83,8 +89,8 @@ function render(template, img, size) {
 		image: img,
 		x: imageOffsetX,
 		y: imageOffsetY,
-		h: height,
-		w: width,
+		h: imgHeight,
+		w: imgWidth,
 		name: "image"
 	}, {
 		z: template.z || 0,
@@ -93,7 +99,7 @@ function render(template, img, size) {
 		y: templateOffsetY,
 		h: template.image.height * templateScale,
 		w: template.image.width * templateScale,
-		name: "template "+template.template
+		name: "template "+template.src
 	}].sort((u,v) => u.z > v.z);
 
 	var canvas = new Canvas(resultingWidth, resultingHeight);
@@ -218,7 +224,10 @@ client.on('message', async function (message) {
 					count++;
 					name += commandParsed[1];
 					if (result === null) result = await loadImage(emoji.url);
-					result = render(templates[commandParsed[1]], result);
+					const templateData = templates[commandParsed[1]];
+					all(templateData, template => {
+						result = render(template, result);
+					})
 				} else {
 					if(i===0) return;
 				}
