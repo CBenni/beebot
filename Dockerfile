@@ -1,7 +1,6 @@
 FROM ubuntu
 MAINTAINER Styler
 
-FROM ubuntu
 WORKDIR /usr/src/app
 COPY package*.json ./
 
