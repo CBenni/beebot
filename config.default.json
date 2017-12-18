@@ -201,6 +201,21 @@
 					"offset": 50
 				}
 			}
-		}]
+		}],
+		"thinking": {
+			"src": "./resources/thinking.png",
+			"z": 2,
+			"anchor": {
+				"x": {
+					"position": 0,
+					"offset": -25,
+					"size": 190
+				},
+				"y": {
+					"position": 100,
+					"offset": 70
+				}
+			}
+		}
 	}
 }
