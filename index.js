@@ -213,8 +213,8 @@ function reverseString(str) {
 const commands = Object.keys(templates).map(x => '/'+x).join(', ');
 const otherCommands = {
 	"invite": `Invite link: <${invitelink}>`,
-	"help": `Available commands: ${commands}.\nUse \\<command> to flip the template horizontally.\nInvite link: <${invitelink}>`,
-	"beebot": `Available commands: ${commands}.\nUse \\<command> to flip the template horizontally.\nInvite link: <${invitelink}>`
+	"help": `Available commands: ${commands}.\nUse \\\\<command> to flip the template horizontally.\nInvite link: <${invitelink}>`,
+	"beebot": `Available commands: ${commands}.\nUse \\\\<command> to flip the template horizontally.\nInvite link: <${invitelink}>`
 }
 
 
