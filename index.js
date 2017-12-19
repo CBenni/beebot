@@ -41,7 +41,7 @@ function calculatePosition(scale, anchor, imageSize) {
 	return imageSize * anchor.position / 100 - anchor.offset * scale;
 }
 
-function render(template, img, size) {
+function render(template, img, size, flipH) {
 	var imgWidth = img.width;
 	var imgHeight = img.height;
 	if (size && size.height) {
@@ -87,7 +87,7 @@ function render(template, img, size) {
 	const toDraw = [{
 		z: 1,
 		image: img,
-		x: imageOffsetX,
+		x: flipH ? resultingWidth - imageOffsetX - imgWidth : imageOffsetX,
 		y: imageOffsetY,
 		h: imgHeight,
 		w: imgWidth,
@@ -99,7 +99,8 @@ function render(template, img, size) {
 		y: templateOffsetY,
 		h: template.image.height * templateScale,
 		w: template.image.width * templateScale,
-		name: "template "+template.src
+		name: "template "+template.src,
+		flipH
 	}].sort((u,v) => u.z > v.z);
 
 	var canvas = new Canvas(resultingWidth, resultingHeight);
@@ -107,9 +108,17 @@ function render(template, img, size) {
 
 	for(let i=0;i<toDraw.length;++i) {
 		const subject = toDraw[i];
-		console.log("Drawing "+subject.name)
+		console.log("Drawing "+subject.name+(subject.flipH?" (flipped)":""))
 		try {
+			if(subject.flipH) {
+				ctx.save();
+				ctx.translate(resultingWidth, 0);
+				ctx.scale(-1, 1);
+			}
 			ctx.drawImage(subject.image, subject.x, subject.y, subject.w, subject.h);
+			if(subject.flipH) {
+				ctx.restore();
+			}
 		 } catch (err) {
 			console.error(err);
 			throw new Error(JSON.stringify({ status: 400, error: "Invalid template" }))
@@ -197,18 +206,29 @@ function loadImage(url) {
 		}
 	});
 }
+function reverseString(str) {
+	return str.split("").reverse().join("");
+}
+
+const commands = Object.keys(templates).map(x => '/'+x).join(', ');
+const otherCommands = {
+	"invite": `Invite link: <${invitelink}>`,
+	"help": `Available commands: ${commands}.\nUse \\<command> to flip the template horizontally.\nInvite link: <${invitelink}>`,
+	"beebot": `Available commands: ${commands}.\nUse \\<command> to flip the template horizontally.\nInvite link: <${invitelink}>`
+}
+
 
 client.on('message', async function (message) {
 	console.log(`[${message.guild.name} - ${message.channel.name}] ${message.author.username}#${message.author.discriminator}: ${message.cleanContent}`);
 
-	if(message.cleanContent.startsWith('/invite')) {
-		message.channel.send(`Invite link: <${invitelink}>`);
-		return;
-	}
-	if(message.cleanContent.startsWith('/help') || message.cleanContent.startsWith('/beebot')) {
-		let commands = Object.keys(templates).map(x => '/'+x).join(', ');
-		message.channel.send(`Available commands: ${commands}`);
-		return;
+	let commandParsed = /^([\/\\])(\w+)\b/.exec(message.cleanContent);
+	if(commandParsed) {
+		const [, direction, command] = commandParsed;
+		if(otherCommands[command]) {
+			const text = otherCommands[command];
+			message.channel.send(direction === "\\" ? reverseString(text) : text);
+			return;
+		}
 	}
 
 	const messageSplit = message.cleanContent.split(" ");
@@ -219,15 +239,19 @@ client.on('message', async function (message) {
 		if (emoji) {
 			let name = emoji.name;
 			for (var i = 0; i < messageSplit.length && count < 4; ++i) {
-				const commandParsed = /^\/(\w+)\b/.exec(messageSplit[i]);
-				if (commandParsed && templates[commandParsed[1]]) {
-					count++;
-					name += commandParsed[1];
-					if (result === null) result = await loadImage(emoji.url);
-					const templateData = templates[commandParsed[1]];
-					all(templateData, template => {
-						result = render(template, result);
-					})
+				commandParsed = /^([\/\\])(\w+)\b/.exec(messageSplit[i]);
+				if (commandParsed) {
+					const [, direction, command] = commandParsed;
+					console.log("Got command ",direction, command, direction === '\\' ? "flipped":"not flipped");
+					if(templates[command]) {
+						count++;
+						name += command;
+						if (result === null) result = await loadImage(emoji.url);
+						const templateData = templates[command];
+						all(templateData, template => {
+							result = render(template, result, null, direction === '\\');
+						})
+					}
 				} else {
 					if(i===0) return;
 				}
