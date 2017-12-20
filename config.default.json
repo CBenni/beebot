@@ -95,7 +95,7 @@
 				}
 			}
 		},
-		"comfy": {
+		"comfy": [{
 			"src": "./resources/ComfyTemplate.png",
 			"z": 2,
 			"anchor": {
@@ -106,10 +106,26 @@
 				},
 				"y": {
 					"position": 100,
-					"offset": 480
+					"offset": 480,
+					"size": 380
 				}
 			}
-		},
+		},{
+			"src": "./resources/ComfyBackground.png",
+			"z": 0,
+			"anchor": {
+				"x": {
+					"position": 0,
+					"offset": 0,
+					"size": 500
+				},
+				"y": {
+					"position": 0,
+					"offset": 0,
+					"size": 500
+				}
+			}
+		}],
 		"netneutrality": {
 			"src": "./resources/NetNeutrality.png",
 			"z": 2,
