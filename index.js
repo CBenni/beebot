@@ -163,8 +163,7 @@ console.log("Bot invite link: " + invitelink);
 
 client.login(config.discord.token).catch(function (error) {
 	if (error) {
-		console.error("Couldn't login: ", error);
-		process.exit(15);
+		console.error("Couldn't login: ", error.toString());
 	}
 });
 
