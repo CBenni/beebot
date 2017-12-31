@@ -1,15 +1,29 @@
+const fs = require('fs');
 const got = require('got');
 const Canvas = require('canvas');
+const streamBuffers = require('stream-buffers');
+const mime = require('mime-types');
 const { GifReader } = require('omggif');
 const GifEncoder = require('gifencoder');
 
-const Image = { Canvas };
+const { Image } = Canvas;
 
-function loadFromUrl(url) {
-  return got(url, { encoding: null }).then(res => ({
-    type: res.headers['content-type'],
-    data: res.body
-  }));
+function loadFromUri(uri) {
+  if (uri.startsWith('http')) {
+    return got(uri, { encoding: null }).then(res => ({
+      type: res.headers['content-type'],
+      data: res.body
+    }));
+  }
+  return new Promise((resolve, reject) => {
+    fs.readFile(uri, (err, data) => {
+      if (err) reject(err);
+      resolve({
+        type: mime.lookup(uri),
+        data
+      });
+    });
+  });
 }
 
 function createCanvas(width, height) {
@@ -18,15 +32,18 @@ function createCanvas(width, height) {
 }
 
 class ImageEx {
-  constructor(url) {
-    this.url = url;
-    this.loaded = loadFromUrl(url).then(result => {
+  constructor(uri) {
+    this.uri = uri;
+    this.loaded = loadFromUri(uri).then(result => {
       this.type = result.type;
       this.data = result.data;
       if (this.type === 'image/gif') {
-        return this.initGif();
+        console.log(uri, 'loaded');
+        this.initGif();
+      } else {
+        this.initStatic();
       }
-      return this.initStatic();
+      return this;
     });
   }
 
@@ -38,26 +55,24 @@ class ImageEx {
     this.frames = this.decodeFrames(reader);
 
     this.renderAllFrames();
+
+    return this;
   }
 
   initStatic() {
     const img = new Image();
     img.src = this.data;
-    return new Promise(resolve => {
-      img.onload = () => {
-        this.width = img.width;
-        this.height = img.height;
-        this.frames = [{
-          actualOffset: 0,
-          actualDelay: Infinity,
-          delay: Infinity
-        }];
-        this.spriteSheet = createCanvas(this.width, this.height);
-        const spriteSheetCtx = this.spriteSheet.getContext('2d');
-        spriteSheetCtx.drawImage(img, 0, 0);
-        resolve();
-      };
-    });
+
+    this.width = img.width;
+    this.height = img.height;
+    this.frames = [{
+      actualOffset: 0,
+      actualDelay: Infinity,
+      delay: Infinity
+    }];
+    this.spriteSheet = createCanvas(this.width, this.height);
+    const spriteSheetCtx = this.spriteSheet.getContext('2d');
+    spriteSheetCtx.drawImage(img, 0, 0);
   }
 
   decodeFrames(reader) {
@@ -148,7 +163,7 @@ class CanvasEx {
 
   addFrame(actualDelay, delay) {
     if ((actualDelay === undefined || actualDelay === null)
-       && (delay === undefined || delay === null)) throw new Error('Delay has to be set!');
+      && (delay === undefined || delay === null)) throw new Error('Delay has to be set!');
     const canvas = createCanvas(this.width, this.height);
     const frame = {
       actualOffset: this.totalDuration,
@@ -190,6 +205,10 @@ class CanvasEx {
       if (img.frames) {
         // the image cant have more than one frame, and if it has 0, we dont need to do anything at all
         if (img.frames.length === 1) {
+          // if theres no frames at all, add one
+          if (this.frames.length === 0) {
+            this.addFrame(Infinity);
+          }
           for (let i = 0; i < this.frames.length; ++i) {
             img.drawFrame(this.frames[i].ctx, 0, x, y, args);
           }
@@ -218,17 +237,41 @@ class CanvasEx {
   }
 
   export(outStream) {
-    const gif = new GifEncoder(this.width, this.height);
-    gif.createReadStream().pipe(outStream);
-    gif.setTransparent(0);
-    gif.setRepeat(0);
-    gif.start();
-    for (let i = 0; i < this.frames.length; ++i) {
-      const frame = this.frames[i];
-      gif.setDelay(frame.delay);
-      gif.addFrame(frame.ctx);
+    if (this.frames.length > 1) {
+      if (outStream.setHeader) outStream.setHeader('Content-Type', 'image/gif');
+      const gif = new GifEncoder(this.width, this.height);
+      gif.createReadStream().pipe(outStream);
+      // gif.setTransparent(0xfefe01);
+      gif.setRepeat(0);
+      gif.start();
+      for (let i = 0; i < this.frames.length; ++i) {
+        const frame = this.frames[i];
+        gif.setDelay(frame.delay);
+        gif.addFrame(frame.ctx);
+      }
+      gif.finish();
+    } else if (this.frames.length === 1) {
+      if (outStream.setHeader) outStream.setHeader('Content-Type', 'image/png');
+      const stream = this.frames[0].canvas.pngStream();
+      stream.pipe(outStream);
+    } else {
+      throw new Error('No image data to be exported');
     }
-    gif.finish();
+  }
+
+  toBuffer() {
+    const buf = new streamBuffers.WritableStreamBuffer({
+      initialSize: this.height * this.width * 4 * this.frames.length,
+      incrementAmount: this.height * this.width * 4
+    });
+    this.export(buf);
+
+    return new Promise(resolve => {
+      buf.on('finish', () => {
+        console.log('Render completed (1)');
+        resolve(buf.getContents());
+      });
+    });
   }
 }
 

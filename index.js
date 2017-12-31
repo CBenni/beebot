@@ -110,7 +110,7 @@ function render(template, img, size, flipH) {
         transform.translate = [resultingWidth, 0];
         transform.scale = [-1, 1];
       }
-      canvas.drawImage(subject.image, subject.x, subject.y, { transform });
+      canvas.drawImage(subject.image, subject.x, subject.y, { width: subject.w, height: subject.h, transform });
     } catch (err) {
       console.error(err);
       throw new Error(JSON.stringify({ status: 400, error: 'Invalid template' }));
@@ -127,8 +127,7 @@ app.get('/:templateName/', async (req, res) => {
     const img = new ImageEx(req.query.url);
     const canvas = render(templates[req.params.templateName], await img.loaded);
     console.log(canvas);
-    res.setHeader('Content-Type', 'image/png');
-    return canvas.pngStream().pipe(res);
+    return canvas.export(res);
   } catch (err) {
     console.log(err);
     return res.status(400).end(err.message);
@@ -160,12 +159,14 @@ client.login(config.discord.token).catch(error => {
 });
 
 function findEmoji(str) {
-  const discordEmote = /<:(\w+):(\d+)>/g.exec(str);
+  const discordEmote = /<(a?):(\w+):(\d+)>/g.exec(str);
   if (discordEmote) {
+    const ext = discordEmote[1] === 'a' ? 'gif' : 'png';
     return {
-      name: discordEmote[1],
-      id: discordEmote[2],
-      url: `https://cdn.discordapp.com/emojis/${discordEmote[2]}.png`
+      name: discordEmote[2],
+      id: discordEmote[3],
+      url: `https://cdn.discordapp.com/emojis/${discordEmote[3]}.${ext}`,
+      ext
     };
   }
 
@@ -234,15 +235,23 @@ client.on('message', async message => {
         } else if (i === 0) return;
       }
       if (result) {
+        const attachment = await result.toBuffer();
+        console.log('Render completed, data:', attachment);
         const messageOptions = {
           files: [
-            { attachment: result.toBuffer(), name: `${name}.png` }
+            { attachment, name: `${name}.${emoji.ext}` }
           ]
         };
-        message.channel.send('', messageOptions);
+        await message.channel.send('', messageOptions);
       }
     }
   } catch (err) {
     console.error(err);
   }
+});
+
+process.on('uncaughtException', exception => {
+  console.log(exception); // to see your exception details in the console
+  // if you are on production, maybe you can send the exception details to your
+  // email as well ?
 });
