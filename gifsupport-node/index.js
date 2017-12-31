@@ -1,8 +1,13 @@
 const _ = require('lodash');
 const express = require('express');
+const { ImageEx, CanvasEx } = require('./imageex');
+
+const request = require('request');
 const Discord = require('discord.js');
 
-const { CanvasEx, ImageEx } = require('./imageex');
+const Canvas = require('canvas');
+
+const { ImageEx, CanvasEx } = require("./imageex");
 
 const twemoji = require('./twemoji');
 
@@ -10,23 +15,26 @@ const app = express();
 const config = require('./config.default.json');
 
 try {
-  _.extend(config, require('./config')); // eslint-disable-line global-require
+  _.extend(config, require('./config'));
 } catch (err) {
   console.log('No config.json found!');
 }
+
+const cache = {};
 
 function all(x, c) {
   _.isArray(x) ? _.each(x, c) : c(x);
 }
 
-const { templates } = config;
+templates = config.templates;
 
-_.each(templates, (template, templateName) => {
+for (templateName in templates) {
   const data = templates[templateName];
-  all(data, templatePart => {
-    template.image = new ImageEx(templatePart.src);
+  all(data, template => {
+    template.image = new Image();
+    template.image.src = template.src;
   });
-});
+}
 
 // drawing: we keep the image fixed in its default position and draw the template on top/below it
 
@@ -99,19 +107,23 @@ function render(template, img, size, flipH) {
     flipH
   }].sort((u, v) => u.z > v.z);
 
-  const canvas = new CanvasEx(resultingWidth, resultingHeight);
+  const canvas = new Canvas(resultingWidth, resultingHeight);
+  const ctx = canvas.getContext('2d');
 
   for (let i = 0; i < toDraw.length; ++i) {
     const subject = toDraw[i];
     console.log(`Drawing ${subject.name}${subject.flipH ? ' (flipped)' : ''}`);
     try {
-      const transform = {};
       if (subject.flipH) {
-        transform.translate = [resultingWidth, 0];
-        transform.scale = [-1, 1];
+        ctx.save();
+        ctx.translate(resultingWidth, 0);
+        ctx.scale(-1, 1);
       }
-      canvas.drawImage(subject.image, subject.x, subject.y, { transform });
-    } catch (err) {
+      ctx.drawImage(subject.image, subject.x, subject.y, subject.w, subject.h);
+      if (subject.flipH) {
+        ctx.restore();
+      }
+		 } catch (err) {
       console.error(err);
       throw new Error(JSON.stringify({ status: 400, error: 'Invalid template' }));
     }
@@ -124,8 +136,7 @@ function render(template, img, size, flipH) {
 app.get('/:templateName/', async (req, res) => {
   if (!templates[req.params.templateName]) return res.status(404).end();
   try {
-    const img = new ImageEx(req.query.url);
-    const canvas = render(templates[req.params.templateName], await img.loaded);
+    const canvas = render(templates[req.params.templateName], await loadImage(req.query.url));
     console.log(canvas);
     res.setHeader('Content-Type', 'image/png');
     return canvas.pngStream().pipe(res);
@@ -148,9 +159,9 @@ const client = new Discord.Client({
 });
 // manage roles permission is required
 const invitelink = `https://discordapp.com/oauth2/authorize?client_id=${
-  config.discord.client_id}&scope=bot&permissions=0`;
+	 config.discord.client_id}&scope=bot&permissions=0`;
 const authlink = `https://discordapp.com/oauth2/authorize?client_id=${
-  config.discord.client_id}&scope=email`;
+	 config.discord.client_id}&scope=email`;
 console.log(`Bot invite link: ${invitelink}`);
 
 client.login(config.discord.token).catch(error => {
@@ -182,6 +193,21 @@ function findEmoji(str) {
   return unicodeEmoji;
 }
 
+function loadImage(url) {
+  return new Promise((resolve, reject) => {
+    console.log(`Getting ${url}`);
+    if (url) {
+      request.get({ url, encoding: null }, (e, r, data) => {
+        if (e) {
+          return reject({ status: (r && r.statusCode || 500), error: e });
+        }
+        const img = new Image();
+        img.src = data;
+        resolve(img);
+      });
+    }
+  });
+}
 function reverseString(str) {
   return str.split('').reverse().join('');
 }
@@ -197,7 +223,7 @@ const otherCommands = {
 client.on('message', async message => {
   console.log(`[${message.guild.name} - ${message.channel.name}] ${message.author.username}#${message.author.discriminator}: ${message.cleanContent}`);
 
-  let commandParsed = /^([/\\])(\w+)\b/.exec(message.cleanContent);
+  let commandParsed = /^([\/\\])(\w+)\b/.exec(message.cleanContent);
   if (commandParsed) {
     const [, direction, command] = commandParsed;
     if (otherCommands[command]) {
@@ -213,21 +239,18 @@ client.on('message', async message => {
   let count = 0;
   try {
     if (emoji) {
-      let { name } = emoji;
+      let name = emoji.name;
       for (let i = 0; i < messageSplit.length && count < 4; ++i) {
-        commandParsed = /^([/\\])(\w+)\b/.exec(messageSplit[i]);
+        commandParsed = /^([\/\\])(\w+)\b/.exec(messageSplit[i]);
         if (commandParsed) {
           const [, direction, command] = commandParsed;
           console.log('Got command ', direction, command, direction === '\\' ? 'flipped' : 'not flipped');
           if (templates[command]) {
             count++;
             name += command;
-            if (result === null) {
-              result = new ImageEx(emoji.url);
-              await result.loaded; // eslint-disable-line no-await-in-loop
-            }
+            if (result === null) result = await loadImage(emoji.url);
             const templateData = templates[command];
-            all(templateData, template => { // eslint-disable-line no-loop-func
+            all(templateData, template => {
               result = render(template, result, null, direction === '\\');
             });
           }
@@ -245,4 +268,19 @@ client.on('message', async message => {
   } catch (err) {
     console.error(err);
   }
+});
+
+
+app.get('/', (req, res) => {
+  const img = new ImageEx(req.query.url || 'https://cdn.discordapp.com/emojis/393563453824040983.gif');
+  img.loaded.then(() => {
+    res.setHeader('Content-Type', 'image/gif');
+    const canvas = new CanvasEx(img.width, img.height);
+    canvas.drawImage(img, 0, 0);
+    canvas.export(res);
+  });
+});
+
+app.listen(3002, () => {
+  console.log('Beebot app listening on port 3002!');
 });

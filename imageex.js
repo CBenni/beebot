@@ -1,45 +1,19 @@
+const got = require('got');
+const Canvas = require('canvas');
+const { GifReader } = require('omggif');
+const GifEncoder = require('gifencoder');
+
+const Image = { Canvas };
+
 function loadFromUrl(url) {
-  return new Promise(((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', url);
-    xhr.responseType = 'arraybuffer';
-    xhr.onload = function () {
-      if (this.status >= 200 && this.status < 300) {
-        resolve({
-          type: xhr.getResponseHeader('Content-Type'),
-          data: xhr.response
-        });
-      } else {
-        reject({
-          status: this.status,
-          statusText: xhr.statusText
-        });
-      }
-    };
-    xhr.onerror = function () {
-      reject({
-        status: this.status,
-        statusText: xhr.statusText
-      });
-    };
-    xhr.send();
+  return got(url, { encoding: null }).then(res => ({
+    type: res.headers['content-type'],
+    data: res.body
   }));
 }
 
-function _arrayBufferToBase64(buffer) {
-  let binary = '';
-  const bytes = new Uint8Array(buffer);
-  const len = bytes.byteLength;
-  for (let i = 0; i < len; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return window.btoa(binary);
-}
-
 function createCanvas(width, height) {
-  const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
+  const canvas = new Canvas(width, height);
   return canvas;
 }
 
@@ -67,13 +41,8 @@ class ImageEx {
   }
 
   initStatic() {
-    // todo: in node, we wanna use this.data
     const img = new Image();
-    const arrayBufferView = new Uint8Array(this.data);
-    const blob = new Blob([arrayBufferView], { type: this.type });
-    const urlCreator = window.URL || window.webkitURL;
-    const imageUrl = urlCreator.createObjectURL(blob);
-    img.src = imageUrl;
+    img.src = this.data;
     return new Promise(resolve => {
       img.onload = () => {
         this.width = img.width;
@@ -125,7 +94,7 @@ class ImageEx {
           break;
         case 3:
           saved = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          disposeFrame = () => ctx.putImageData(saved, 0, 0);
+          disposeFrame = () => ctx.putImageData(saved, 0, 0); // eslint-disable-line no-loop-func
           break;
         default:
           this.disposeFrame = null;
@@ -150,7 +119,6 @@ class ImageEx {
   }
 
   drawFrame(ctx, frameNum, x, y, args = {}) {
-    console.log('this', this);
     const sx = frameNum * this.width + (args.sx || 0);
     const sy = args.sy || 0;
     const swidth = Math.min(args.swidth || this.width, this.width) - (args.sx || 0);
@@ -194,13 +162,8 @@ class CanvasEx {
   }
 
   drawImage(img, x, y, args = {}) {
-    let {
-      sx, sy, swidth, sheight, width, height, beginAt = 0, endAt = Infinity
-    } = args;
     console.log('Drawing image ', img);
     console.log('At ', x, y, args);
-    beginAt = Math.max(0, beginAt);
-    endAt = Math.min(Math.max(img.totalDuration || 0, this.totalDuration), endAt);
     if (img.frames && img.frames.length > 1) {
       if (this.frames.length > 1) throw new Error('Cannot render animations onto animated canvases!');
       this.totalDuration = img.totalDuration;
@@ -209,14 +172,14 @@ class CanvasEx {
       // render the original on each frame, and draw the frame on top.
       for (let i = this.frames.length; i < img.frames.length; ++i) {
         const frame = img.frames[i];
-        console.log(`Adding frame ${i}:`, frame);
+        // console.log(`Adding frame ${i}:`, frame);
         this.addFrame(null, frame.delay);
         if (this.frames.length > 0) {
           this.frames[i].ctx.drawImage(this.frames[0].canvas, 0, 0);
         }
       }
       for (let i = 0; i < img.frames.length; ++i) {
-        console.log(`Drawing frame ${i}:`, img.frames[i]);
+        // console.log(`Drawing frame ${i}:`, img.frames[i]);
         // draw the i-th source frame to the i-th target frame
         img.drawFrame(this.frames[i].ctx, i, x, y, args);
       }
@@ -242,8 +205,8 @@ class CanvasEx {
 
   drawFrame(ctx, frameNum, x, y, args = {}) {
     // console.log(`Drawing frame ${frameNum} of`, this)
-    ctx.drawImage(this.frames[frameNum].canvas, x, y);
-    // this.drawImage(ctx, this.frames[frameNum].canvas, x,y,args);
+    // ctx.drawImage(this.frames[frameNum].canvas, x, y);
+    this.drawImage(ctx, this.frames[frameNum].canvas, x, y, args);
   }
 
   _drawImage(ctx, img, x, y, args = {}) {
@@ -253,8 +216,27 @@ class CanvasEx {
       ctx.drawImage(img, x, y, args.width, args.height);
     }
   }
+
+  export(outStream) {
+    const gif = new GifEncoder(this.width, this.height);
+    gif.createReadStream().pipe(outStream);
+    gif.setTransparent(0);
+    gif.setRepeat(0);
+    gif.start();
+    for (let i = 0; i < this.frames.length; ++i) {
+      const frame = this.frames[i];
+      gif.setDelay(frame.delay);
+      gif.addFrame(frame.ctx);
+    }
+    gif.finish();
+  }
 }
 
+module.exports = {
+  CanvasEx,
+  ImageEx
+};
+/*
 // const img = new ImageEx("https://cors-anywhere.herokuapp.com/https://cdn.betterttv.net/emote/554da1a289d53f2d12781907/3x");
 
 const img = new ImageEx('https://cors-anywhere.herokuapp.com/https://cdn.discordapp.com/emojis/393563453824040983.gif');
