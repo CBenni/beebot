@@ -3,3 +3,5 @@ node_modules
 *.log
 run_forever
 ffmpeg.exe
+gifsupport/js/
+gifsupport/*.map

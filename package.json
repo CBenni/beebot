@@ -14,7 +14,17 @@
     "canvas": "^1.6.5",
     "discord.js": "^11.1.0",
     "express": "^4.15.2",
+    "gifencoder": "^1.1.0",
+    "got": "^8.0.1",
     "lodash": "^4.17.4",
-    "request": "^2.81.0"
+    "mime-types": "^2.1.17",
+    "omggif": "^1.0.9",
+    "request": "^2.81.0",
+    "stream-buffers": "^3.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^4.14.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0"
   }
 }
