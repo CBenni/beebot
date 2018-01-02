@@ -52,8 +52,10 @@ class ImageEx {
     const reader = new GifReader(new Uint8Array(this.data));
     this.width = reader.width;
     this.height = reader.height;
+    console.log('Decoding frames');
     this.frames = this.decodeFrames(reader);
 
+    console.log('Frames decoded!');
     this.renderAllFrames();
 
     return this;
@@ -165,6 +167,11 @@ class CanvasEx {
     if ((actualDelay === undefined || actualDelay === null)
       && (delay === undefined || delay === null)) throw new Error('Delay has to be set!');
     const canvas = createCanvas(this.width, this.height);
+
+    if (!Number.isNaN(delay) && delay <= 1) {
+      delay = 10;
+    }
+
     const frame = {
       actualOffset: this.totalDuration,
       delay: delay || Math.max(Math.round(actualDelay / 10), 2),
@@ -246,7 +253,7 @@ class CanvasEx {
       gif.start();
       for (let i = 0; i < this.frames.length; ++i) {
         const frame = this.frames[i];
-        gif.setDelay(frame.delay);
+        gif.setDelay(frame.actualDelay);
         gif.addFrame(frame.ctx);
       }
       gif.finish();
