@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const fs = require('fs');
 const got = require('got');
 const Canvas = require('canvas');
@@ -29,6 +30,24 @@ function loadFromUri(uri) {
 function createCanvas(width, height) {
   const canvas = new Canvas(width, height);
   return canvas;
+}
+
+function _drawImage(ctx, img, x, y, args = {}) {
+  if (args.transform) {
+    ctx.save();
+    _.each(args.transform, (val, prop) => {
+      console.log('Transform: ', prop, val);
+      ctx[prop](...val);
+    });
+  }
+  if (args.sx !== undefined || args.sy !== undefined || args.swidth !== undefined || args.sheight !== undefined) {
+    ctx.drawImage(img, args.sx, args.sy, args.swidth, args.sheight, x, y, args.width || args.swidth, args.height || args.sheight);
+  } else {
+    ctx.drawImage(img, x, y, args.width, args.height);
+  }
+  if (args.transform) {
+    ctx.restore();
+  }
 }
 
 class ImageEx {
@@ -99,7 +118,7 @@ class ImageEx {
     const canvas = createCanvas(this.width, this.height);
     const ctx = canvas.getContext('2d');
     let saved;
-    this.spriteSheet = createCanvas(this.width * this.frames.length, this.height);
+    this.spriteSheet = createCanvas((this.width + 1) * this.frames.length, this.height);
     const spriteSheetCtx = this.spriteSheet.getContext('2d');
     for (let i = 0; i < this.frames.length; ++i) {
       const frame = this.frames[i];
@@ -120,7 +139,7 @@ class ImageEx {
       // draw current frame
       ctx.drawImage(frame.buffer, frame.x, frame.y);
       // draw the frame onto the sprite sheet
-      spriteSheetCtx.drawImage(canvas, this.width * i, 0);
+      spriteSheetCtx.drawImage(canvas, (this.width + 1) * i, 0);
     }
   }
 
@@ -136,7 +155,7 @@ class ImageEx {
   }
 
   drawFrame(ctx, frameNum, x, y, args = {}) {
-    const sx = frameNum * this.width + (args.sx || 0);
+    const sx = frameNum * (this.width + 1) + (args.sx || 0);
     const sy = args.sy || 0;
     const swidth = Math.min(args.swidth || this.width, this.width) - (args.sx || 0);
     const sheight = args.sheight || this.height;
@@ -151,14 +170,16 @@ class ImageEx {
     console.log('w', args.width);
     console.log('h', args.height);
 
-    ctx.drawImage(this.spriteSheet, sx, sy, swidth, sheight, x, y, args.width || swidth, args.height || sheight);
+    _drawImage(ctx, this.spriteSheet, x, y, {
+      sx, sy, swidth, sheight, width: args.width || swidth, height: args.height || sheight, transform: args.transform
+    });
     // ctx.drawImage(this.spriteSheet, 0, 0, 112, 112, 0, 0, 112, 112)
   }
 }
 class CanvasEx {
   constructor(width, height) {
-    this.width = width;
-    this.height = height;
+    this.width = Math.round(width);
+    this.height = Math.round(height);
     this.frames = [];
     this.totalDuration = Infinity;
   }
@@ -197,7 +218,9 @@ class CanvasEx {
         // console.log(`Adding frame ${i}:`, frame);
         this.addFrame(null, frame.delay);
         if (this.frames.length > 0) {
-          this.frames[i].ctx.drawImage(this.frames[0].canvas, 0, 0);
+          this.frames[i].ctx.antialias = 'none';
+          _drawImage(this.frames[i].ctx, this.frames[0].canvas, 0, 0, { width: this.width, height: this.height });
+          this.frames[i].ctx.antialias = 'default';
         }
       }
       for (let i = 0; i < img.frames.length; ++i) {
@@ -205,11 +228,10 @@ class CanvasEx {
         // draw the i-th source frame to the i-th target frame
         img.drawFrame(this.frames[i].ctx, i, x, y, args);
       }
-      console.log('Done drawing animated image, CanvasEx is now', this);
     } else {
       // we are drawing a static image on top of a (possibly animated) image.
       // for each frame, just draw, nothing fancy.
-      if (img.frames) {
+      if (img.frames) { // eslint-disable-line no-lonely-if
         // the image cant have more than one frame, and if it has 0, we dont need to do anything at all
         if (img.frames.length === 1) {
           // if theres no frames at all, add one
@@ -222,25 +244,14 @@ class CanvasEx {
         }
       } else {
         for (let i = 0; i < this.frames.length; ++i) {
-          this.drawImage(this.frames[i].ctx, img, x, y, args);
+          _drawImage(this.frames[i].ctx, img, x, y, args);
         }
       }
-      console.log('Done drawing static image, CanvasEx is now', this);
     }
   }
 
   drawFrame(ctx, frameNum, x, y, args = {}) {
-    // console.log(`Drawing frame ${frameNum} of`, this)
-    // ctx.drawImage(this.frames[frameNum].canvas, x, y);
-    this.drawImage(ctx, this.frames[frameNum].canvas, x, y, args);
-  }
-
-  _drawImage(ctx, img, x, y, args = {}) {
-    if (args.sx !== undefined || args.sy !== undefined || args.swidth !== undefined || args.sheight !== undefined) {
-      ctx.drawImage(img, args.sx, args.sy, args.swidth, args.sheight, x, y, args.width, args.height);
-    } else {
-      ctx.drawImage(img, x, y, args.width, args.height);
-    }
+    _drawImage(ctx, this.frames[frameNum].canvas, x, y, args);
   }
 
   export(outStream) {
@@ -286,56 +297,3 @@ module.exports = {
   CanvasEx,
   ImageEx
 };
-/*
-// const img = new ImageEx("https://cors-anywhere.herokuapp.com/https://cdn.betterttv.net/emote/554da1a289d53f2d12781907/3x");
-
-const img = new ImageEx('https://cors-anywhere.herokuapp.com/https://cdn.discordapp.com/emojis/393563453824040983.gif');
-const _canvas = document.getElementById('c');
-const _ctx = _canvas.getContext('2d');
-
-const img2 = new ImageEx('https://rawgit.com/CBenni/beebot/master/resources/SnowGlobe.png');
-
-const _cnv = new CanvasEx(128, 128);
-img.loaded.then(() => {
-  _cnv.drawImage(img, 0, 0);
-  // img.drawFrame(_ctx, 0, 0, 0)
-  return img2.loaded;
-}).then(() => {
-  _cnv.drawImage(img2, 0, 0, { width: 128, height: 128 });
-}).then(() => {
-  console.log('Drawing CanvasEx to screen', _cnv);
-  _cnv.drawFrame(_ctx, 0, 0, 0);
-
-  console.log('Starting gif render');
-  const GifEncoder = new GIF({
-    workers: 2,
-    quality: 10,
-    transparent: 'rgba(0,0,0,0)'
-  });
-
-  for (let i = 0; i < _cnv.frames.length; ++i) {
-    const frame = _cnv.frames[i];
-    console.log(`Rendering frame ${i}`);
-    GifEncoder.addFrame(frame.canvas, { delay: frame.delay });
-  }
-
-  GifEncoder.on('finished', blob => {
-    console.log('Done rendering!', URL.createObjectURL(blob));
-    document.getElementById('i').src = URL.createObjectURL(blob);
-  });
-
-  GifEncoder.render();
-});
-
-let curFrm = 0;
-setInterval(() => {
-  _ctx.clearRect(0, 0, 200, 200);
-  _cnv.drawFrame(_ctx, curFrm++ % _cnv.frames.length, 0, 0);
-}, 100);
-
-
-/* img2.loaded.then(() => {
-  _ctx.drawImage(img2.spriteSheet, 0, 100)
-})
-
-img.loaded.then(()=>_ctx.drawImage(img.spriteSheet,0,0)) */

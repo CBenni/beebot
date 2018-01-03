@@ -24,7 +24,7 @@ const { templates } = config;
 _.each(templates, (template, templateName) => {
   const data = templates[templateName];
   all(data, templatePart => {
-    template.image = new ImageEx(templatePart.src);
+    templatePart.image = new ImageEx(templatePart.src);
   });
 });
 
@@ -176,7 +176,8 @@ function findEmoji(str) {
     unicodeEmoji = {
       name,
       id: name,
-      url: `${emoji.base + emoji.size}/${name}${emoji.ext}`
+      url: `${emoji.base + emoji.size}/${name}${emoji.ext}`,
+      ext: emoji.ext
     };
     return false;
   });
@@ -229,6 +230,7 @@ client.on('message', async message => {
             }
             const templateData = templates[command];
             all(templateData, template => { // eslint-disable-line no-loop-func
+              console.log('Drawing template', template);
               result = render(template, result, null, direction === '\\');
             });
           }
@@ -251,7 +253,5 @@ client.on('message', async message => {
 });
 
 process.on('uncaughtException', exception => {
-  console.log(exception); // to see your exception details in the console
-  // if you are on production, maybe you can send the exception details to your
-  // email as well ?
+  console.log(exception);
 });
