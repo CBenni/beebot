@@ -158,7 +158,11 @@ client.login(config.discord.token).catch(error => {
   }
 });
 
-function findEmoji(str) {
+const discordAvatarRegex = /(https:\/\/cdn.discordapp.com\/avatars\/\w+\/\w+\.(\w+)\?size=)(\w+)/;
+
+function findEmoji(message) {
+  const str = message.cleanContent;
+  // find a discord emote
   const discordEmote = /<(a?):(\w+):(\d+)>/g.exec(str);
   if (discordEmote) {
     const ext = discordEmote[1] === 'a' ? 'gif' : 'png';
@@ -170,6 +174,7 @@ function findEmoji(str) {
     };
   }
 
+  // find a unicode emoji
   let unicodeEmoji;
   twemoji.parse(str, (name, emoji) => {
     if (unicodeEmoji) return false;
@@ -181,7 +186,28 @@ function findEmoji(str) {
     };
     return false;
   });
-  return unicodeEmoji;
+  if (unicodeEmoji) return unicodeEmoji;
+
+  // find a user mention
+  if (message.mentions.members.size > 0) {
+    const mentionedMember = message.mentions.members.first();
+    const mentionedUser = mentionedMember.user;
+    let avatarUrl = mentionedUser.displayAvatarURL;
+    const avatarMatch = discordAvatarRegex.exec(avatarUrl);
+    if (avatarMatch) {
+      const ext = avatarMatch[2];
+      avatarUrl = `${avatarMatch[1]}128`;
+    }
+    console.log('Avatar url: ', avatarUrl);
+    return {
+      name: mentionedMember.displayName,
+      id: mentionedMember.id,
+      url: avatarUrl,
+      ext: avatarUrl.indexOf('.gif') >= 0 ? 'gif' : 'png'
+    };
+  }
+
+  return null;
 }
 
 function reverseString(str) {
@@ -210,7 +236,7 @@ client.on('message', async message => {
   }
 
   const messageSplit = message.cleanContent.split(' ');
-  const emoji = findEmoji(message.cleanContent);
+  const emoji = findEmoji(message);
   let result = null;
   let count = 0;
   try {
