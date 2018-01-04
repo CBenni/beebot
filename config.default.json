@@ -232,6 +232,22 @@
 					"offset": 70
 				}
 			}
+		},
+		"window": {
+			"src": "./resources/WindowTemplate.png",
+			"z": 2,
+			"anchor": {
+				"x": {
+					"position": 50,
+					"offset": 64,
+					"size": 100
+				},
+				"y": {
+					"position": 50,
+					"offset": 64,
+					"size": 100
+				}
+			}
 		}
 	}
 }
