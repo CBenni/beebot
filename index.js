@@ -234,7 +234,7 @@ client.on('message', async message => {
     }
   }
 
-  if (message.cleanContent[0] === '/') {
+  if (message.cleanContent[0] === '/' || message.cleanContent[0] === '\\') {
     const messageSplit = message.cleanContent.split(' ');
     const emoji = findEmoji(message);
     let result = null;
