@@ -198,7 +198,6 @@ function findEmoji(message) {
       const ext = avatarMatch[2];
       avatarUrl = `${avatarMatch[1]}128`;
     }
-    console.log('Avatar url: ', avatarUrl);
     return {
       name: mentionedMember.displayName,
       id: mentionedMember.id,
@@ -235,46 +234,48 @@ client.on('message', async message => {
     }
   }
 
-  const messageSplit = message.cleanContent.split(' ');
-  const emoji = findEmoji(message);
-  let result = null;
-  let count = 0;
-  try {
-    if (emoji) {
-      let { name } = emoji;
-      for (let i = 0; i < messageSplit.length && count < 4; ++i) {
-        commandParsed = /^([/\\])(\w+)\b/.exec(messageSplit[i]);
-        if (commandParsed) {
-          const [, direction, command] = commandParsed;
-          console.log('Got command ', direction, command, direction === '\\' ? 'flipped' : 'not flipped');
-          if (templates[command]) {
-            count++;
-            name += command;
-            if (result === null) {
-              result = new ImageEx(emoji.url);
-              await result.loaded; // eslint-disable-line no-await-in-loop
+  if (message.cleanContent[0] === '/') {
+    const messageSplit = message.cleanContent.split(' ');
+    const emoji = findEmoji(message);
+    let result = null;
+    let count = 0;
+    try {
+      if (emoji) {
+        let { name } = emoji;
+        for (let i = 0; i < messageSplit.length && count < 4; ++i) {
+          commandParsed = /^([/\\])(\w+)\b/.exec(messageSplit[i]);
+          if (commandParsed) {
+            const [, direction, command] = commandParsed;
+            console.log('Got command ', direction, command, direction === '\\' ? 'flipped' : 'not flipped');
+            if (templates[command]) {
+              count++;
+              name += command;
+              if (result === null) {
+                result = new ImageEx(emoji.url);
+                await result.loaded; // eslint-disable-line no-await-in-loop
+              }
+              const templateData = templates[command];
+              all(templateData, template => { // eslint-disable-line no-loop-func
+                console.log('Drawing template', template);
+                result = render(template, result, null, direction === '\\');
+              });
             }
-            const templateData = templates[command];
-            all(templateData, template => { // eslint-disable-line no-loop-func
-              console.log('Drawing template', template);
-              result = render(template, result, null, direction === '\\');
-            });
-          }
-        } else if (i === 0) return;
+          } else if (i === 0) return;
+        }
+        if (result) {
+          const attachment = await result.toBuffer();
+          console.log('Render completed, data:', attachment);
+          const messageOptions = {
+            files: [
+              { attachment, name: `${name}.${emoji.ext}` }
+            ]
+          };
+          await message.channel.send('', messageOptions);
+        }
       }
-      if (result) {
-        const attachment = await result.toBuffer();
-        console.log('Render completed, data:', attachment);
-        const messageOptions = {
-          files: [
-            { attachment, name: `${name}.${emoji.ext}` }
-          ]
-        };
-        await message.channel.send('', messageOptions);
-      }
+    } catch (err) {
+      console.error(err);
     }
-  } catch (err) {
-    console.error(err);
   }
 });
 
