@@ -248,6 +248,37 @@
 					"size": 100
 				}
 			}
-		}
+    },
+    "omegalul": [{
+			"src": "./resources/OmegaLULTemplate.png",
+			"z": 2,
+			"anchor": {
+				"x": {
+					"position": 50,
+					"offset": 61,
+					"size": 100
+				},
+				"y": {
+					"position": 50,
+					"offset": 64,
+					"size": 100
+				}
+			}
+		},{
+			"src": "./resources/OmegaLULBackground.png",
+			"z": 0,
+			"anchor": {
+				"x": {
+					"position": 50,
+					"offset": 61,
+					"size": 122
+				},
+				"y": {
+					"position": 50,
+					"offset": 64,
+					"size": 128
+				}
+			}
+		}]
 	}
 }
