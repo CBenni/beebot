@@ -136,6 +136,18 @@ function render(template, img, size, flipH) {
   return (canvas);
 }
 
+app.get('/debug/frame/', async (req, res) => {
+  try {
+    const img = new ImageEx(req.query.url);
+    await img.loaded;
+    console.log(img.frames);
+    return img.frames[req.query.num].canvas.pngStream().pipe(res);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).end(err.message);
+  }
+});
+
 app.get('/:templateName/', async (req, res) => {
   if (!templates[req.params.templateName]) return res.status(404).end();
   try {

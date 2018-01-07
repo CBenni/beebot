@@ -48,6 +48,7 @@ function _drawImage(ctx, img, x, y, args = {}) {
 class ImageEx {
   constructor(uri) {
     this.uri = uri;
+    this.frames = null;
     this.loaded = loadFromUri(uri).then(result => {
       this.type = result.type;
       this.data = result.data;
@@ -81,14 +82,17 @@ class ImageEx {
 
     this.width = img.width;
     this.height = img.height;
+
+    const canvas = createCanvas(this.width, this.height);
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+
     this.frames = [{
       actualOffset: 0,
       actualDelay: Infinity,
-      delay: Infinity
+      delay: Infinity,
+      canvas
     }];
-    this.spriteSheet = createCanvas(this.width, this.height);
-    const spriteSheetCtx = this.spriteSheet.getContext('2d');
-    spriteSheetCtx.drawImage(img, 0, 0);
   }
 
   decodeFrames(reader) {
@@ -113,10 +117,9 @@ class ImageEx {
     const canvas = createCanvas(this.width, this.height);
     const ctx = canvas.getContext('2d');
     let saved;
-    this.spriteSheet = createCanvas((this.width + 1) * this.frames.length, this.height);
-    const spriteSheetCtx = this.spriteSheet.getContext('2d');
     for (let i = 0; i < this.frames.length; ++i) {
       const frame = this.frames[i];
+      console.log('Rendering frame', frame);
       if (typeof disposeFrame === 'function') disposeFrame();
 
       switch (frame.disposal) {
@@ -133,8 +136,11 @@ class ImageEx {
 
       // draw current frame
       ctx.drawImage(frame.buffer, frame.x, frame.y);
-      // draw the frame onto the sprite sheet
-      spriteSheetCtx.drawImage(canvas, (this.width + 1) * i, 0);
+
+      const frameCanvas = createCanvas(this.width, this.height);
+      const frameCtx = frameCanvas.getContext('2d');
+      frameCtx.drawImage(canvas, 0, 0);
+      frame.canvas = frameCanvas;
     }
   }
 
@@ -150,15 +156,7 @@ class ImageEx {
   }
 
   drawFrame(ctx, frameNum, x, y, args = {}) {
-    const sx = frameNum * (this.width + 1) + (args.sx || 0);
-    const sy = args.sy || 0;
-    const swidth = Math.min(args.swidth || this.width, this.width) - (args.sx || 0);
-    const sheight = args.sheight || this.height;
-
-    _drawImage(ctx, this.spriteSheet, x, y, {
-      sx, sy, swidth, sheight, width: args.width || swidth, height: args.height || sheight, transform: args.transform
-    });
-    // ctx.drawImage(this.spriteSheet, 0, 0, 112, 112, 0, 0, 112, 112)
+    _drawImage(ctx, this.frames[frameNum].canvas, x, y, args);
   }
 }
 class CanvasEx {
