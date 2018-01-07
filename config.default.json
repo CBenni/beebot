@@ -279,6 +279,24 @@
 					"size": 128
 				}
 			}
-		}]
-	}
+		}],
+    "shoot": {
+      "src": "./resources/BulletHole.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "absolute": true,
+          "position": 0,
+          "offset": "Math.random()*imgWidth",
+          "size": "123*5"
+        },
+        "y": {
+          "absolute": true,
+          "position": 0,
+          "offset": "Math.random()*imgHeight",
+          "size": "130*5"
+        }
+      }
+    }
+  }
 }

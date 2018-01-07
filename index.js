@@ -34,7 +34,15 @@ _.each(templates, (template, templateName) => {
 // size = width or height of the template/image
 // anchor = the corresponding anchor config
 function calculatePosition(scale, anchor, imageSize) {
+  if (anchor.absolute) {
+    return anchor.offset;
+  }
   return imageSize * anchor.position / 100 - anchor.offset * scale;
+}
+
+function getNumericAnchor(anchor, imgWidth, imgHeight) { // eslint-disable-line no-unused-vars
+  return _.mapValues(anchor, dimension =>
+    _.mapValues(dimension, value => (Number.isFinite(value) ? Number(value) : eval(value)))); // eslint-disable-line no-eval
 }
 
 function render(template, img, size, flipH) {
@@ -49,13 +57,21 @@ function render(template, img, size, flipH) {
     if (!size.height) imgHeight = imgHeight * size.width / img.width;
   }
 
-  const xScale = imgWidth / template.anchor.x.size;
-  const yScale = imgHeight / template.anchor.y.size;
+  const anchor = getNumericAnchor(template.anchor, imgWidth, imgHeight);
+  console.log('Numeric anchor: ', anchor);
+  const xScale = imgWidth / anchor.x.size;
+  const yScale = imgHeight / anchor.y.size;
   const templateScale = Math.max(0, Math.min(10, Math.max(xScale || 0, yScale || 0)));
 
+  let templateOffsetX;
+  let templateOffsetY;
+  templateOffsetX = calculatePosition(templateScale, anchor.x, imgWidth);
+  templateOffsetY = calculatePosition(templateScale, anchor.y, imgHeight);
 
-  let templateOffsetX = calculatePosition(templateScale, template.anchor.x, imgWidth);
-  let templateOffsetY = calculatePosition(templateScale, template.anchor.y, imgHeight);
+  console.log('xScale', xScale);
+  console.log('yScale', yScale);
+  console.log('templateOffsetX', templateOffsetX);
+  console.log('templateOffsetY', templateOffsetY);
 
   let imageOffsetX = 0;
   let imageOffsetY = 0;
