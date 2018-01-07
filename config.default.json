@@ -1,285 +1,294 @@
 {
-	"discord": {
-		"token": "<discord bot token>",
-		"client_id": "<discord client id>"
-	},
-	"templates": {
-		"bee": {
-			"src": "./resources/BeeTemplate.png",
-			"z": 0,
-			"anchor": {
-				"x": {
-					"position": 50,
-					"offset": 475,
-					"size": 600
-				},
-				"y": {
-					"position": 100,
-					"offset": 530
-				}
-			}
-		},
-		"turtle": {
-			"src": "./resources/TurtleTemplate.png",
-			"z": 0,
-			"anchor": {
-				"x": {
-					"position": 50,
-					"offset": 210,
-					"size": 150
-				},
-				"y": {
-					"position": 100,
-					"offset": 150
-				}
-			}
-		},
-		"santa": {
-			"src": "./resources/SantaHat.png",
-			"z": 2,
-			"anchor": {
-				"x": {
-					"position": 50,
-					"offset": 275,
-					"size": 350
-				},
-				"y": {
-					"position": 0,
-					"offset": 150
-				}
-			}
-		},
-		"birthday": {
-			"src": "./resources/BirthdayHat.png",
-			"z": 2,
-			"anchor": {
-				"x": {
-					"position": 50,
-					"offset": 512,
-					"size": 1000
-				},
-				"y": {
-					"position": 0,
-					"offset": 700
-				}
-			}
-		},
-		"dank": {
-			"src": "./resources/DankHat.png",
-			"z": 2,
-			"anchor": {
-				"x": {
-					"position": 50,
-					"offset": 150,
-					"size": 320
-				},
-				"y": {
-					"position": 0,
-					"offset": 220
-				}
-			}
-		},
-		"space": {
-			"src": "./resources/AstronautHelmet.png",
-			"z": 2,
-			"anchor": {
-				"x": {
-					"position": 50,
-					"offset": 300,
-					"size": 500
-				},
-				"y": {
-					"position": 100,
-					"offset": 500,
-					"size": 500
-				}
-			}
-		},
-		"comfy": [{
-			"src": "./resources/ComfyTemplate.png",
-			"z": 2,
-			"anchor": {
-				"x": {
-					"position": 45,
-					"offset": 210,
-					"size": 380
-				},
-				"y": {
-					"position": 100,
-					"offset": 480,
-					"size": 380
-				}
-			}
-		},{
-			"src": "./resources/ComfyBackground.png",
-			"z": 0,
-			"anchor": {
-				"x": {
-					"position": 0,
-					"offset": 0,
-					"size": 500
-				},
-				"y": {
-					"position": 0,
-					"offset": 0,
-					"size": 500
-				}
-			}
-		}],
-		"netneutrality": {
-			"src": "./resources/NetNeutrality.png",
-			"z": 2,
-			"anchor": {
-				"x": {
-					"position": 50,
-					"offset": 256,
-					"size": 512
-				},
-				"y": {
-					"position": 50,
-					"offset": 256,
-					"size": 512
-				}
-			}
-		},
-		"anger": {
-			"src": "./resources/anger.png",
-			"z": 2,
-			"anchor": {
-				"x": {
-					"position": 75,
-					"offset": 22.5,
-					"size": 100
-				},
-				"y": {
-					"position": 25,
-					"offset": 22.5
-				}
-			}
-		},
-		"snowglobe": {
-			"src": "./resources/SnowGlobe.png",
-			"z": 2,
-			"anchor": {
-				"x": {
-					"position": 50,
-					"offset": 92.5,
-					"size": 185
-				},
-				"y": {
-					"position": 0,
-					"offset": 20,
-					"size": 150
-				}
-			}
-		},
-		"ice": {
-			"src": "./resources/IceCube.png",
-			"z": 2,
-			"anchor": {
-				"x": {
-					"position": 50,
-					"offset": 128,
-					"size": 200
-				},
-				"y": {
-					"position": 50,
-					"offset": 128,
-					"size": 200
-				}
-			}
-		},
-		"snowman": [{
-			"src": "./resources/SnowMan.png",
-			"z": 0,
-			"anchor": {
-				"x": {
-					"position": 50,
-					"offset": 125,
-					"size": 120
-				},
-				"y": {
-					"position": 100,
-					"offset": 60
-				}
-			}
-		}, {
-			"src": "./resources/SnowManHat.png",
-			"z": 2,
-			"anchor": {
-				"x": {
-					"position": 50,
-					"offset": 60,
-					"size": 200
-				},
-				"y": {
-					"position": 0,
-					"offset": 50
-				}
-			}
-		}],
-		"thinking": {
-			"src": "./resources/thinking.png",
-			"z": 2,
-			"anchor": {
-				"x": {
-					"position": 0,
-					"offset": -25,
-					"size": 190
-				},
-				"y": {
-					"position": 100,
-					"offset": 70
-				}
-			}
-		},
-		"window": {
-			"src": "./resources/WindowTemplate.png",
-			"z": 2,
-			"anchor": {
-				"x": {
-					"position": 50,
-					"offset": 64,
-					"size": 100
-				},
-				"y": {
-					"position": 50,
-					"offset": 64,
-					"size": 100
-				}
-			}
+  "discord": {
+    "token": "<discord bot token>",
+    "client_id": "<discord client id>"
+  },
+  "templates": {
+    "bee": {
+      "src": "./resources/BeeTemplate.png",
+      "z": 0,
+      "anchor": {
+        "x": {
+          "position": 50,
+          "offset": 475,
+          "size": 600
+        },
+        "y": {
+          "position": 100,
+          "offset": 530
+        }
+      }
     },
-    "omegalul": [{
-			"src": "./resources/OmegaLULTemplate.png",
-			"z": 2,
-			"anchor": {
-				"x": {
-					"position": 50,
-					"offset": 61,
-					"size": 100
-				},
-				"y": {
-					"position": 50,
-					"offset": 64,
-					"size": 100
-				}
-			}
-		},{
-			"src": "./resources/OmegaLULBackground.png",
-			"z": 0,
-			"anchor": {
-				"x": {
-					"position": 50,
-					"offset": 61,
-					"size": 122
-				},
-				"y": {
-					"position": 50,
-					"offset": 64,
-					"size": 128
-				}
-			}
-		}],
+    "turtle": {
+      "src": "./resources/TurtleTemplate.png",
+      "z": 0,
+      "anchor": {
+        "x": {
+          "position": 50,
+          "offset": 210,
+          "size": 150
+        },
+        "y": {
+          "position": 100,
+          "offset": 150
+        }
+      }
+    },
+    "santa": {
+      "src": "./resources/SantaHat.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "position": 50,
+          "offset": 275,
+          "size": 350
+        },
+        "y": {
+          "position": 0,
+          "offset": 150
+        }
+      }
+    },
+    "birthday": {
+      "src": "./resources/BirthdayHat.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "position": 50,
+          "offset": 512,
+          "size": 1000
+        },
+        "y": {
+          "position": 0,
+          "offset": 700
+        }
+      }
+    },
+    "dank": {
+      "src": "./resources/DankHat.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "position": 50,
+          "offset": 150,
+          "size": 320
+        },
+        "y": {
+          "position": 0,
+          "offset": 220
+        }
+      }
+    },
+    "space": {
+      "src": "./resources/AstronautHelmet.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "position": 50,
+          "offset": 300,
+          "size": 500
+        },
+        "y": {
+          "position": 100,
+          "offset": 500,
+          "size": 500
+        }
+      }
+    },
+    "comfy": [
+      {
+        "src": "./resources/ComfyTemplate.png",
+        "z": 2,
+        "anchor": {
+          "x": {
+            "position": 45,
+            "offset": 210,
+            "size": 380
+          },
+          "y": {
+            "position": 100,
+            "offset": 480,
+            "size": 380
+          }
+        }
+      },
+      {
+        "src": "./resources/ComfyBackground.png",
+        "z": 0,
+        "anchor": {
+          "x": {
+            "position": 0,
+            "offset": 0,
+            "size": 500
+          },
+          "y": {
+            "position": 0,
+            "offset": 0,
+            "size": 500
+          }
+        }
+      }
+    ],
+    "netneutrality": {
+      "src": "./resources/NetNeutrality.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "position": 50,
+          "offset": 256,
+          "size": 512
+        },
+        "y": {
+          "position": 50,
+          "offset": 256,
+          "size": 512
+        }
+      }
+    },
+    "anger": {
+      "src": "./resources/anger.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "position": 75,
+          "offset": 22.5,
+          "size": 100
+        },
+        "y": {
+          "position": 25,
+          "offset": 22.5
+        }
+      }
+    },
+    "snowglobe": {
+      "src": "./resources/SnowGlobe.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "position": 50,
+          "offset": 92.5,
+          "size": 185
+        },
+        "y": {
+          "position": 0,
+          "offset": 20,
+          "size": 150
+        }
+      }
+    },
+    "ice": {
+      "src": "./resources/IceCube.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "position": 50,
+          "offset": 128,
+          "size": 200
+        },
+        "y": {
+          "position": 50,
+          "offset": 128,
+          "size": 200
+        }
+      }
+    },
+    "snowman": [
+      {
+        "src": "./resources/SnowMan.png",
+        "z": 0,
+        "anchor": {
+          "x": {
+            "position": 50,
+            "offset": 125,
+            "size": 120
+          },
+          "y": {
+            "position": 100,
+            "offset": 60
+          }
+        }
+      },
+      {
+        "src": "./resources/SnowManHat.png",
+        "z": 2,
+        "anchor": {
+          "x": {
+            "position": 50,
+            "offset": 60,
+            "size": 200
+          },
+          "y": {
+            "position": 0,
+            "offset": 50
+          }
+        }
+      }
+    ],
+    "thinking": {
+      "src": "./resources/thinking.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "position": 0,
+          "offset": -25,
+          "size": 190
+        },
+        "y": {
+          "position": 100,
+          "offset": 70
+        }
+      }
+    },
+    "window": {
+      "src": "./resources/WindowTemplate.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "position": 50,
+          "offset": 64,
+          "size": 100
+        },
+        "y": {
+          "position": 50,
+          "offset": 64,
+          "size": 100
+        }
+      }
+    },
+    "omegalul": [
+      {
+        "src": "./resources/OmegaLULTemplate.png",
+        "z": 2,
+        "anchor": {
+          "x": {
+            "position": 50,
+            "offset": 61,
+            "size": 100
+          },
+          "y": {
+            "position": 50,
+            "offset": 64,
+            "size": 100
+          }
+        }
+      },
+      {
+        "src": "./resources/OmegaLULBackground.png",
+        "z": 0,
+        "anchor": {
+          "x": {
+            "position": 50,
+            "offset": 61,
+            "size": 122
+          },
+          "y": {
+            "position": 50,
+            "offset": 64,
+            "size": 128
+          }
+        }
+      }
+    ],
     "shoot": {
       "src": "./resources/BulletHole.png",
       "z": 2,
@@ -295,6 +304,22 @@
           "position": 0,
           "offset": "Math.random()*(imgHeight - 130/5)",
           "size": "130*5"
+        }
+      }
+    },
+    "ban": {
+      "src": "./resources/BanTemplate.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "position": 50,
+          "offset": 512,
+          "size": 1200
+        },
+        "y": {
+          "position": 50,
+          "offset": 500,
+          "size": 1200
         }
       }
     }

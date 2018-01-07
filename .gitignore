@@ -5,3 +5,4 @@ run_forever
 ffmpeg.exe
 gifsupport/js/
 gifsupport/*.map
+resources/custom
