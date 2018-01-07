@@ -287,13 +287,13 @@
         "x": {
           "absolute": true,
           "position": 0,
-          "offset": "Math.random()*imgWidth",
+          "offset": "Math.random()*(imgWidth - 123/5)",
           "size": "123*5"
         },
         "y": {
           "absolute": true,
           "position": 0,
-          "offset": "Math.random()*imgHeight",
+          "offset": "Math.random()*(imgHeight - 130/5)",
           "size": "130*5"
         }
       }
