@@ -148,8 +148,8 @@ app.get('/:templateName/', async (req, res) => {
   }
 });
 
-app.listen(3002, () => {
-  console.log('Beebot app listening on port 3002!');
+app.listen(config.http.port, () => {
+  console.log(`Beebot app listening on port ${config.http.port}!`);
 });
 
 

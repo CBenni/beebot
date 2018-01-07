@@ -1,4 +1,7 @@
 {
+  "http": {
+    "port": 3002
+  },
   "discord": {
     "token": "<discord bot token>",
     "client_id": "<discord client id>"
