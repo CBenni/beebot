@@ -7,6 +7,7 @@ const mime = require('mime-types');
 const { GifReader } = require('omggif');
 const GifEncoder = require('gifencoder');
 
+const { createCanvas } = Canvas;
 const { Image } = Canvas;
 
 function loadFromUri(uri) {
@@ -25,11 +26,6 @@ function loadFromUri(uri) {
       });
     });
   });
-}
-
-function createCanvas(width, height) {
-  const canvas = new Canvas(width, height);
-  return canvas;
 }
 
 function _drawImage(ctx, img, x, y, args = {}) {
