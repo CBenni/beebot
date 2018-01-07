@@ -175,6 +175,7 @@ client.login(config.discord.token).catch(error => {
 const discordAvatarRegex = /(https:\/\/cdn.discordapp.com\/avatars\/\w+\/\w+\.(\w+)\?size=)(\w+)/;
 
 function findEmoji(message) {
+  console.log('Mentions:', message.mentions);
   // find a user mention
   if (message.mentions.members.size > 0) {
     const mentionedMember = message.mentions.members.first();
@@ -260,7 +261,7 @@ client.on('message', async message => {
           commandParsed = /^([/\\])(\w+)\b/.exec(messageSplit[i]);
           if (commandParsed) {
             const [, direction, command] = commandParsed;
-            console.log('Got command ', direction, command, direction === '\\' ? 'flipped' : 'not flipped');
+            console.log('Got command ', direction, command, direction === '\\' ? 'flipped' : 'not flipped', emoji);
             if (templates[command]) {
               count++;
               name += command;
