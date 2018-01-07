@@ -32,7 +32,6 @@ function _drawImage(ctx, img, x, y, args = {}) {
   if (args.transform) {
     ctx.save();
     _.each(args.transform, (val, prop) => {
-      console.log('Transform: ', prop, val);
       ctx[prop](...val);
     });
   }
@@ -156,16 +155,6 @@ class ImageEx {
     const swidth = Math.min(args.swidth || this.width, this.width) - (args.sx || 0);
     const sheight = args.sheight || this.height;
 
-    console.log(`Drawing frame ${frameNum} at`);
-    console.log('sx', sx);
-    console.log('sy', sy);
-    console.log('sw', swidth);
-    console.log('sh', sheight);
-    console.log('x', x);
-    console.log('y', y);
-    console.log('w', args.width);
-    console.log('h', args.height);
-
     _drawImage(ctx, this.spriteSheet, x, y, {
       sx, sy, swidth, sheight, width: args.width || swidth, height: args.height || sheight, transform: args.transform
     });
@@ -180,38 +169,42 @@ class CanvasEx {
     this.totalDuration = Infinity;
   }
 
-  addFrame(actualDelay, delay) {
+  setDelay(frame, actualDelay, delay) {
+    if (!Number.isFinite(this.totalDuration)) this.totalDuration = 0;
+    else if (Number.isFinite(frame.actualDelay)) this.totalDuration -= frame.actualDelay || 0;
     if ((actualDelay === undefined || actualDelay === null)
       && (delay === undefined || delay === null)) throw new Error('Delay has to be set!');
-    const canvas = createCanvas(this.width, this.height);
-
     if (!Number.isNaN(delay) && delay <= 1) {
       delay = 10;
     }
+    frame.delay = delay || Math.max(Math.round(actualDelay / 10), 2);
+    frame.actualDelay = actualDelay || Math.max(delay * 10, 20);
+    this.totalDuration += frame.actualDelay;
+  }
 
+  addFrame(actualDelay, delay) {
+    const canvas = createCanvas(this.width, this.height);
     const frame = {
       actualOffset: this.totalDuration,
-      delay: delay || Math.max(Math.round(actualDelay / 10), 2),
-      actualDelay: actualDelay || Math.max(delay * 10, 20),
       canvas,
       ctx: canvas.getContext('2d')
     };
-    this.totalDuration += delay;
+    this.setDelay(frame, actualDelay, delay);
+    this.totalDuration += frame.actualDelay;
     this.frames.push(frame);
   }
 
   drawImage(img, x, y, args = {}) {
-    console.log('Drawing image ', img);
-    console.log('At ', x, y, args);
     if (img.frames && img.frames.length > 1) {
       if (this.frames.length > 1) throw new Error('Cannot render animations onto animated canvases!');
-      this.totalDuration = img.totalDuration;
+      this.totalDuration = 0;
       // we are drawing an animated image onto a static one.
       // for each frame in the image, create a frame on this one, cloning the original picture (if any),
       // render the original on each frame, and draw the frame on top.
+      // if this canvas already has a frame, update the duration
+      if (this.frames.length > 0) this.setDelay(this.frames[0], null, img.frames[0].delay);
       for (let i = this.frames.length; i < img.frames.length; ++i) {
         const frame = img.frames[i];
-        // console.log(`Adding frame ${i}:`, frame);
         this.addFrame(null, frame.delay);
         if (this.frames.length > 0) {
           this.frames[i].ctx.antialias = 'none';
@@ -220,7 +213,6 @@ class CanvasEx {
         }
       }
       for (let i = 0; i < img.frames.length; ++i) {
-        // console.log(`Drawing frame ${i}:`, img.frames[i]);
         // draw the i-th source frame to the i-th target frame
         img.drawFrame(this.frames[i].ctx, i, x, y, args);
       }
@@ -282,7 +274,7 @@ class CanvasEx {
 
     return new Promise(resolve => {
       buf.on('finish', () => {
-        console.log('Render completed (1)');
+        console.log('Render completed');
         resolve(buf.getContents());
       });
     });

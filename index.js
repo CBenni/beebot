@@ -52,7 +52,6 @@ function render(template, img, size, flipH) {
   const xScale = imgWidth / template.anchor.x.size;
   const yScale = imgHeight / template.anchor.y.size;
   const templateScale = Math.max(0, Math.min(10, Math.max(xScale || 0, yScale || 0)));
-  console.log('templateScale', templateScale);
 
 
   let templateOffsetX = calculatePosition(templateScale, template.anchor.x, imgWidth);
@@ -126,7 +125,6 @@ app.get('/:templateName/', async (req, res) => {
   try {
     const img = new ImageEx(req.query.url);
     const canvas = render(templates[req.params.templateName], await img.loaded);
-    console.log(canvas);
     return canvas.export(res);
   } catch (err) {
     console.log(err);
@@ -256,7 +254,6 @@ client.on('message', async message => {
               }
               const templateData = templates[command];
               all(templateData, template => { // eslint-disable-line no-loop-func
-                console.log('Drawing template', template);
                 result = render(template, result, null, direction === '\\');
               });
             }
@@ -264,7 +261,6 @@ client.on('message', async message => {
         }
         if (result) {
           const attachment = await result.toBuffer();
-          console.log('Render completed, data:', attachment);
           const messageOptions = {
             files: [
               { attachment, name: `${name}.${emoji.ext}` }
