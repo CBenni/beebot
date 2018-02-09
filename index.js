@@ -151,6 +151,9 @@ app.get('/debug/frame/', async (req, res) => {
 app.get('/:templateName/', async (req, res) => {
   if (!templates[req.params.templateName]) return res.status(404).end();
   try {
+    if(!/^https?:/.test(req.query.url)) {
+        return res.status(400).end("Invalid url!")
+    }
     const img = new ImageEx(req.query.url);
     const canvas = render(templates[req.params.templateName], await img.loaded);
     return canvas.export(res);
