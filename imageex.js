@@ -29,18 +29,26 @@ function loadFromUri(uri) {
 }
 
 function _drawImage(ctx, img, x, y, args = {}) {
-  if (args.transform) {
+  if (args.transform || args.attributes) {
     ctx.save();
-    _.each(args.transform, (val, prop) => {
-      ctx[prop](...val);
-    });
+    if (args.transform) {
+      _.each(args.transform, (val, prop) => {
+        ctx[prop](...val);
+      });
+    }
+    if (args.attributes) {
+      _.each(args.attributes, (val, prop) => {
+        console.log(`Setting ${prop } to ${val}`);
+        ctx[prop] = val;
+      });
+    }
   }
   if (args.sx !== undefined || args.sy !== undefined || args.swidth !== undefined || args.sheight !== undefined) {
     ctx.drawImage(img, args.sx, args.sy, args.swidth, args.sheight, x, y, args.width || args.swidth, args.height || args.sheight);
   } else {
     ctx.drawImage(img, x, y, args.width, args.height);
   }
-  if (args.transform) {
+  if (args.transform || args.attributes) {
     ctx.restore();
   }
 }

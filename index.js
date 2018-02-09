@@ -57,6 +57,7 @@ function render(template, img, size, flipH) {
     if (!size.height) imgHeight = imgHeight * size.width / img.width;
   }
 
+  console.log('Drawing template: ', template);
   const anchor = getNumericAnchor(template.anchor, imgWidth, imgHeight);
   console.log('Numeric anchor: ', anchor);
   const xScale = imgWidth / anchor.x.size;
@@ -111,7 +112,8 @@ function render(template, img, size, flipH) {
     h: template.image.height * templateScale,
     w: template.image.width * templateScale,
     name: `template ${template.src}`,
-    flipH
+    flipH,
+    attributes: template.attributes
   }].sort((u, v) => u.z > v.z);
 
   const canvas = new CanvasEx(resultingWidth, resultingHeight);
@@ -125,7 +127,9 @@ function render(template, img, size, flipH) {
         transform.translate = [resultingWidth, 0];
         transform.scale = [-1, 1];
       }
-      canvas.drawImage(subject.image, subject.x, subject.y, { width: subject.w, height: subject.h, transform });
+      canvas.drawImage(subject.image, subject.x, subject.y, {
+        width: subject.w, height: subject.h, transform, attributes: subject.attributes
+      });
     } catch (err) {
       console.error(err);
       throw new Error(JSON.stringify({ status: 400, error: 'Invalid template' }));

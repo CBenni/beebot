@@ -82,8 +82,8 @@
         }
       }
     },
-    "space": {
-      "src": "./resources/AstronautHelmet.png",
+    "space": [{
+      "src": "./resources/AstronautMask.png",
       "z": 2,
       "anchor": {
         "x": {
@@ -96,9 +96,47 @@
           "offset": 500,
           "size": 500
         }
+      },
+      "attributes": {
+        "globalCompositeOperation": "destination-in"
       }
     },
+    {
+      "src": "./resources/AstronautHelmet.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "position": 0,
+          "offset": 0,
+          "size": 600
+        },
+        "y": {
+          "position": 0,
+          "offset": 0,
+          "size": 565
+        }
+      }
+    }],
     "comfy": [
+      {
+        "src": "./resources/ComfyBackground.png",
+        "z": 2,
+        "anchor": {
+          "x":{
+            "position":0,
+            "offset":0,
+            "size":500
+          },
+          "y": {
+            "position": 0,
+            "offset": 0,
+            "size": 500
+          }
+        },
+        "attributes": {
+          "globalCompositeOperation": "destination-in"
+        }
+      },
       {
         "src": "./resources/ComfyTemplate.png",
         "z": 2,
@@ -163,8 +201,8 @@
         }
       }
     },
-    "snowglobe": {
-      "src": "./resources/SnowGlobe.png",
+    "snowglobe": [{
+      "src": "./resources/SnowGlobeMask.png",
       "z": 2,
       "anchor": {
         "x": {
@@ -174,13 +212,31 @@
         },
         "y": {
           "position": 0,
-          "offset": 20,
-          "size": 150
+          "offset": 0,
+          "size": 185
+        }
+      },
+      "attributes": {
+        "globalCompositeOperation": "destination-in"
+      }
+    },{
+      "src": "./resources/SnowGlobe.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "position": 0,
+          "offset": 0,
+          "size": 185
+        },
+        "y": {
+          "position": 0,
+          "offset": 0,
+          "size": 212
         }
       }
-    },
-    "ice": {
-      "src": "./resources/IceCube.png",
+    }],
+    "ice": [{
+      "src": "./resources/IceCubeMask.png",
       "z": 2,
       "anchor": {
         "x": {
@@ -193,8 +249,26 @@
           "offset": 128,
           "size": 200
         }
+      },
+      "attributes": {
+        "globalCompositeOperation": "destination-in"
       }
-    },
+    },{
+      "src": "./resources/IceCube.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "position": 0,
+          "offset": 0,
+          "size": 256
+        },
+        "y": {
+          "position": 0,
+          "offset": 0,
+          "size": 256
+        }
+      }
+    }],
     "snowman": [
       {
         "src": "./resources/SnowMan.png",
@@ -242,8 +316,8 @@
         }
       }
     },
-    "window": {
-      "src": "./resources/WindowTemplate.png",
+    "window": [{
+      "src": "./resources/WindowMask.png",
       "z": 2,
       "anchor": {
         "x": {
@@ -256,11 +330,29 @@
           "offset": 64,
           "size": 100
         }
+      },
+      "attributes": {
+        "globalCompositeOperation": "destination-in"
       }
-    },
+    },{
+      "src": "./resources/WindowTemplate.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "position": 0,
+          "offset": 0,
+          "size": 128
+        },
+        "y": {
+          "position": 0,
+          "offset": 0,
+          "size": 128
+        }
+      }
+    }],
     "omegalul": [
       {
-        "src": "./resources/OmegaLULTemplate.png",
+        "src": "./resources/OmegaLULBackground.png",
         "z": 2,
         "anchor": {
           "x": {
@@ -273,6 +365,25 @@
             "offset": 64,
             "size": 100
           }
+        },
+        "attributes": {
+          "globalCompositeOperation": "destination-in"
+        }
+      },
+      {
+        "src": "./resources/OmegaLULTemplate.png",
+        "z": 2,
+        "anchor": {
+          "x": {
+            "position": 0,
+            "offset": 0,
+            "size": 122
+          },
+          "y": {
+            "position": 0,
+            "offset": 0,
+            "size": 128
+          }
         }
       },
       {
@@ -280,13 +391,13 @@
         "z": 0,
         "anchor": {
           "x": {
-            "position": 50,
-            "offset": 61,
+            "position": 0,
+            "offset": 0,
             "size": 122
           },
           "y": {
-            "position": 50,
-            "offset": 64,
+            "position": 0,
+            "offset": 0,
             "size": 128
           }
         }
