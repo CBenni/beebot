@@ -18,7 +18,8 @@
 		"no-plusplus": "off",
 		"no-bitwise": "off",
 		"no-continue": "off",
-		"no-unused-expressions": "off",
+    "no-unused-expressions": "off",
+    "no-console": "off",
 		"arrow-parens": [
 			2,
 			"as-needed"

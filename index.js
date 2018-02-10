@@ -155,8 +155,8 @@ app.get('/debug/frame/', async (req, res) => {
 app.get('/:templateName/', async (req, res) => {
   if (!templates[req.params.templateName]) return res.status(404).end();
   try {
-    if(!/^https?:/.test(req.query.url)) {
-        return res.status(400).end("Invalid url!")
+    if (!/^https?:/.test(req.query.url)) {
+      return res.status(400).end('Invalid url!');
     }
     const img = new ImageEx(req.query.url);
     const canvas = render(templates[req.params.templateName], await img.loaded);
@@ -181,8 +181,8 @@ const client = new Discord.Client({
 // manage roles permission is required
 const invitelink = `https://discordapp.com/oauth2/authorize?client_id=${
   config.discord.client_id}&scope=bot&permissions=0`;
-const authlink = `https://discordapp.com/oauth2/authorize?client_id=${
-  config.discord.client_id}&scope=email`;
+/* const authlink = `https://discordapp.com/oauth2/authorize?client_id=${
+  config.discord.client_id}&scope=email`; */
 console.log(`Bot invite link: ${invitelink}`);
 
 client.login(config.discord.token).catch(error => {
@@ -255,7 +255,8 @@ const otherCommands = {
 
 
 client.on('message', async message => {
-  console.log(`[${message.guild.name} - ${message.channel.name}] ${message.author.username}#${message.author.discriminator}: ${message.cleanContent}`);
+  console.log(`[${message.guild.name} - ${message.channel.name}] ${message.author.username}`
+  + `#${message.author.discriminator}: ${message.cleanContent}`);
 
   let commandParsed = /^([/\\])(\w+)\b/.exec(message.cleanContent);
   if (commandParsed) {
@@ -301,7 +302,12 @@ client.on('message', async message => {
               { attachment, name: `${name}.${emoji.ext}` }
             ]
           };
-          await message.channel.send('', messageOptions);
+          console.log('Sending message with result:', result);
+          await message.channel.send('', messageOptions).then(() => {
+            console.log('Message sent!');
+          }).catch(err => {
+            console.error('Message sending failed:', err);
+          });
         }
       }
     } catch (err) {

@@ -38,7 +38,7 @@ function _drawImage(ctx, img, x, y, args = {}) {
     }
     if (args.attributes) {
       _.each(args.attributes, (val, prop) => {
-        console.log(`Setting ${prop } to ${val}`);
+        console.log(`Setting ${prop} to ${val}`);
         ctx[prop] = val;
       });
     }
