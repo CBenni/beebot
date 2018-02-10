@@ -325,6 +325,28 @@
           "size": 1200
         }
       }
+    },
+    "spin": {
+      "src": "./resources/blank.png",
+      "z": 0,
+      "anchor": {
+        "x": {
+          "position": 50,
+          "offset": 50,
+          "size": 100
+        },
+        "y": {
+          "position": 50,
+          "offset": 50,
+          "size": 100
+        }
+      },
+      "transform": {
+        "rotate": "t*2*Math.PI"
+      },
+      "animation": {
+
+      }
     }
   }
 }
