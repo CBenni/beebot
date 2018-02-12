@@ -93,7 +93,7 @@
         },
         "y": {
           "position": 100,
-          "offset": 500,
+          "offset": 550,
           "size": 500
         }
       },
@@ -357,12 +357,12 @@
         "anchor": {
           "x": {
             "position": 50,
-            "offset": 61,
+            "offset": 58,
             "size": 100
           },
           "y": {
             "position": 50,
-            "offset": 64,
+            "offset": 68,
             "size": 100
           }
         },
