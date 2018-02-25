@@ -289,5 +289,6 @@ class CanvasEx {
 
 module.exports = {
   CanvasEx,
-  ImageEx
+  ImageEx,
+  _drawImage
 };

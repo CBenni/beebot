@@ -9,6 +9,8 @@ const twemoji = require('./twemoji');
 const app = express();
 const config = require('./config.default.json');
 
+const filters = require('./filters.js');
+
 try {
   _.extend(config, require('./config')); // eslint-disable-line global-require
 } catch (err) {
@@ -113,10 +115,11 @@ function render(template, img, size, flipH) {
     w: template.image.width * templateScale,
     name: `template ${template.src}`,
     flipH,
-    attributes: template.attributes
+    attributes: template.attributes,
+    filter: filters[template.filter]
   }].sort((u, v) => u.z > v.z);
 
-  const canvas = new CanvasEx(resultingWidth, resultingHeight);
+  let canvas = new CanvasEx(resultingWidth, resultingHeight);
 
   for (let i = 0; i < toDraw.length; ++i) {
     const subject = toDraw[i];
@@ -127,9 +130,15 @@ function render(template, img, size, flipH) {
         transform.translate = [resultingWidth, 0];
         transform.scale = [-1, 1];
       }
-      canvas.drawImage(subject.image, subject.x, subject.y, {
-        width: subject.w, height: subject.h, transform, attributes: subject.attributes
-      });
+      if (subject.filter) {
+        canvas = subject.filter(canvas, subject.image, subject.x, subject.y, {
+          width: subject.w, height: subject.h, transform, attributes: subject.attributes
+        });
+      } else {
+        canvas.drawImage(subject.image, subject.x, subject.y, {
+          width: subject.w, height: subject.h, transform, attributes: subject.attributes
+        });
+      }
     } catch (err) {
       console.error(err);
       throw new Error(JSON.stringify({ status: 400, error: 'Invalid template' }));

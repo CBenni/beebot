@@ -436,6 +436,23 @@
           "size": 1200
         }
       }
+    },
+    "pride": {
+      "src": "./resources/PrideOverlay.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "position": 0,
+          "offset": 0,
+          "size": 512
+        },
+        "y": {
+          "position": 0,
+          "offset": 0,
+          "size": 512
+        }
+      },
+      "filter": "pride"
     }
   }
 }
