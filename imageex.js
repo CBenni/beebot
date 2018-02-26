@@ -33,6 +33,7 @@ function _drawImage(ctx, img, x, y, args = {}) {
     ctx.save();
     if (args.transform) {
       _.each(args.transform, (val, prop) => {
+        console.log(`Transforming ${prop} by ${val}`);
         ctx[prop](...val);
       });
     }
