@@ -453,6 +453,55 @@
         }
       },
       "filter": "pride"
+    },
+    "couch": [
+      {
+        "src": "./resources/CouchTemplate.png",
+        "z": 2,
+        "anchor": {
+          "x": {
+            "position": 50,
+            "offset": 964
+          },
+          "y": {
+            "position": 50,
+            "offset": 530,
+            "size": 200
+          }
+        }
+      },
+      {
+        "src": "./resources/CouchBackground.png",
+        "z": 0,
+        "anchor": {
+          "x": {
+            "position": 0,
+            "offset": 0,
+            "size": 1920
+          },
+          "y": {
+            "position": 0,
+            "offset": 0,
+            "size": 1080
+          }
+        }
+      }
+    ],
+    "ping": {
+      "src": "./resources/ping.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "position": 100,
+          "offset": 350,
+          "size": 1024
+        },
+        "y": {
+          "position": 0,
+          "offset": -94,
+          "size": 1024
+        }
+      }
     }
   }
 }

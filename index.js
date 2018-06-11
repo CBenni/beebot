@@ -289,8 +289,8 @@ client.on('message', async message => {
           commandParsed = /^([/\\])(\w+)\b/.exec(messageSplit[i]);
           if (commandParsed) {
             const [, direction, command] = commandParsed;
-            console.log('Got command ', direction, command, direction === '\\' ? 'flipped' : 'not flipped', emoji);
             if (templates[command]) {
+              console.log('Got command ', direction, command, direction === '\\' ? 'flipped' : 'not flipped', emoji);
               count++;
               name += command;
               if (result === null) {
