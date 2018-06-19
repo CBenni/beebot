@@ -502,6 +502,22 @@
           "size": 1024
         }
       }
+    },
+    "unity": {
+      "src": "./resources/twitchunity.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "position": 50,
+          "offset": 150,
+          "size": 300
+        },
+        "y": {
+          "position": 50,
+          "offset": 150,
+          "size": 250
+        }
+      }
     }
   }
 }
