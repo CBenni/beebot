@@ -539,7 +539,7 @@
     },
     "hypers": {
       "src": "./resources/hypersTemplate.png",
-      "z": 2,
+      "z": 0,
       "anchor": {
         "x": {
           "position": 0,
@@ -547,8 +547,8 @@
           "size": 450
         },
         "y": {
-          "position": 0,
-          "offset": 0,
+          "position": 100,
+          "offset": 445,
           "size": 445
         }
       }
@@ -564,7 +564,7 @@
         },
         "y": {
           "position": 0,
-          "offset": 40,
+          "offset": 35,
           "size": 100
         }
       }
