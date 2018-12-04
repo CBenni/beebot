@@ -518,6 +518,130 @@
           "size": 250
         }
       }
-    }
+    },
+    "blood": {
+      "src": "./resources/bloodTemplate.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "absolute": true,
+          "position": 0,
+          "offset": "Math.random()*(imgWidth - 400/5)",
+          "size": "123*5"
+        },
+        "y": {
+          "absolute": true,
+          "position": 0,
+          "offset": "Math.random()*(imgHeight - 368/5)",
+          "size": "130*5"
+        }
+      }
+    },
+    "hypers": {
+      "src": "./resources/hypersTemplate.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "position": 0,
+          "offset": 70,
+          "size": 450
+        },
+        "y": {
+          "position": 0,
+          "offset": 0,
+          "size": 445
+        }
+      }
+    },
+    "deer": {
+      "src": "./resources/deer.png",
+      "z": 0,
+      "anchor": {
+        "x": {
+          "position": 0,
+          "offset": 0,
+          "size": 100
+        },
+        "y": {
+          "position": 0,
+          "offset": 40,
+          "size": 100
+        }
+      }
+    },
+    "christmasbell": [
+      {
+        "src": "./resources/christmasBellMask.png",
+        "z": 2,
+        "anchor": {
+          "x": {
+            "position": 0,
+            "offset": 25,
+            "size": 325
+          },
+          "y": {
+            "position": 0,
+            "offset": 55,
+            "size": 330
+          }
+        },
+        "attributes": {
+          "globalCompositeOperation": "destination-in"
+        }
+      },
+      {
+        "src": "./resources/christmasBell.png",
+        "z": 2,
+        "anchor": {
+          "x": {
+            "position": 0,
+            "offset": 0,
+            "size": 380
+          },
+          "y": {
+            "position": 0,
+            "offset": 0,
+            "size": 380
+          }
+        }
+      }
+    ],
+    "star": [
+      {
+        "src": "./resources/starMask.png",
+        "z": 2,
+        "anchor": {
+          "x": {
+            "position": 0,
+            "offset": 50,
+            "size": 900
+          },
+          "y": {
+            "position": 0,
+            "offset": 50,
+            "size": 900
+          }
+        },
+        "attributes": {
+          "globalCompositeOperation": "destination-in"
+        }
+      },
+      {
+        "src": "./resources/star.png",
+        "z": 2,
+        "anchor": {
+          "x": {
+            "position": 0,
+            "offset": 0,
+            "size": 1024
+          },
+          "y": {
+            "position": 0,
+            "offset": 0,
+            "size": 1024
+          }
+        }
+      }
+    ]
   }
 }
