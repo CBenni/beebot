@@ -539,7 +539,7 @@
     },
     "hypers": {
       "src": "./resources/hypersTemplate.png",
-      "z": 0,
+      "z": 2,
       "anchor": {
         "x": {
           "position": 0,
