@@ -42,6 +42,8 @@ function calculatePosition(scale, anchor, imageSize) {
   return imageSize * anchor.position / 100 - anchor.offset * scale;
 }
 
+// global variable, can be used to get the previous template calculations
+let previousCalculation; // eslint-disable-line no-unused-vars
 function getNumericAnchor(anchor, imgWidth, imgHeight) { // eslint-disable-line no-unused-vars
   return _.mapValues(anchor, dimension =>
     _.mapValues(dimension, value => (Number.isFinite(value) ? Number(value) : eval(value)))); // eslint-disable-line no-eval
@@ -98,6 +100,15 @@ function render(template, img, size, flipH) {
     resultingHeight = templateOffsetY + template.image.height * templateScale;
   }
 
+  previousCalculation = {
+    templateOffsetX,
+    templateOffsetY,
+    resultingWidth,
+    resultingHeight,
+    xScale,
+    yScale,
+    templateScale
+  };
   const toDraw = [{
     z: 1,
     image: img,
@@ -117,7 +128,8 @@ function render(template, img, size, flipH) {
     flipH,
     attributes: template.attributes,
     filter: filters[template.filter]
-  }].sort((u, v) => u.z > v.z);
+  }].sort((u, v) => u.z - v.z);
+  console.log('To draw:', toDraw);
 
   let canvas = new CanvasEx(resultingWidth, resultingHeight);
 

@@ -642,6 +642,36 @@
           }
         }
       }
-    ]
+    ],
+    "chef": [{
+      "src": "./resources/ChefHat.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "position": 35,
+          "offset": 199,
+          "size": 398
+        },
+        "y": {
+          "position": 25,
+          "offset": 300,
+          "size": 369
+        }
+      }
+    }, {
+      "src": "./resources/ChefBackground.png",
+      "z": 0,
+      "anchor": {
+        "x": {
+          "position": 0,
+          "offset": 0,
+          "size": "imgWidth / previousCalculation.templateScale"
+        },
+        "y": {
+          "position": 0,
+          "offset": 0
+        }
+      }
+    }]
   }
 }
