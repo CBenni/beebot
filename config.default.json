@@ -672,6 +672,21 @@
           "offset": 0
         }
       }
-    }]
+    }],
+    "police": {
+      "src": "./resources/PoliceHat.png",
+      "z": 2,
+      "anchor": {
+        "x": {
+          "position": 50,
+          "offset": 400,
+          "size": 700
+        },
+        "y": {
+          "position": 0,
+          "offset": 400
+        }
+      }
+    }
   }
 }
