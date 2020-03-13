@@ -709,13 +709,13 @@
         "anchor": {
           "x": {
             "position": 50,
-            "offset": 300,
-            "size": 490
+            "offset": 225,
+            "size": 450
           },
           "y": {
             "position": 50,
-            "offset": 245,
-            "size": 490
+            "offset": 225,
+            "size": 450
           }
         },
         "attributes": {
