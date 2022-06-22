@@ -15,7 +15,7 @@
     "discord.js": "^11.4.2",
     "express": "^4.15.2",
     "gifencoder": "^1.1.0",
-    "got": "^8.0.1",
+    "got": "^11.8.5",
     "lodash": "^4.17.13",
     "mime-types": "^2.1.17",
     "omggif": "^1.0.9",
